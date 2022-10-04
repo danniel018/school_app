@@ -1,0 +1,6 @@
+*config.py
+venv/
+*__pycache__
+*yaml
+*.json
+*.txt
