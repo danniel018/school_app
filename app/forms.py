@@ -1,5 +1,5 @@
-from wtforms import StringField, SubmitField, PasswordField, SelectField, IntegerField, \
-    DateField,DecimalField, TextAreaField, BooleanField, RadioField, MultipleFileField, EmailField
+from email.policy import default
+from wtforms import StringField, SubmitField, PasswordField, IntegerField, EmailField , RadioField
 from wtforms.validators import DataRequired, Length, InputRequired, EqualTo
 from flask_wtf import FlaskForm 
 from flask_wtf.file import FileField, FileRequired
@@ -14,12 +14,13 @@ class Users(FlaskForm):
 
 class New_user(Users):
     name=StringField("Name",validators=[DataRequired(),Length(max=20,message="")])
-    lastname=StringField("Lastname",validators=[DataRequired(),Length(max=20,message="")])
+    lastname=StringField("Lastname",validators=[DataRequired(),Length(max=20,message="")]) 
     email=EmailField("Email",validators=[DataRequired(),Length(max=50,message="")])
     cellphone=EmailField("Cellphone",validators=[DataRequired(),Length(max=10,message="")])
     password2 = PasswordField('confirm password',validators=[InputRequired(),EqualTo('password', message='Passwords are not equal')])
-    profile_code = PasswordField('Access code',validators=[InputRequired()])
-    add_user = SubmitField("Registrarse")
+    #child_dni = 
+    access_code = PasswordField('Access code',validators=[InputRequired()])
+    add_user = SubmitField("Sign Up")    
 
 class Login(Users):
     log_in = SubmitField("Ingresar")

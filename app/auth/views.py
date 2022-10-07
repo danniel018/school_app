@@ -1,59 +1,60 @@
-from flask import make_response, render_template,flash,redirect,url_for,request,jsonify
+from flask import Blueprint ,make_response, render_template,flash,redirect,url_for,request,jsonify
 from flask_login import login_user, login_required, logout_user, current_user
-from . import auth
+
 from app.forms import New_user, Login 
 from werkzeug.security import generate_password_hash,check_password_hash
 from app.database import Database
-from app.config import Profiles_codes
+from app.config import Access_code
 from app.models import Userdata
 
-@auth.route('/registro',methods=['GET','POST'])
+auth = Blueprint('auth',__name__, url_prefix='/auth',template_folder='templates') 
+
+@auth.route('/signup',methods=['GET','POST'])
 def signup():
     
     if current_user.is_authenticated: 
         return redirect(url_for('warriors.inicio'))
 
     form = New_user()
-    conection = Database("Usuario","nombre de usuario")
-    codes = Profiles_codes()
+    database = Database()
+    code = Access_code()
     if form.add_user.data and form.validate():
-        codes_areas = vars(codes)
-        x = 1
-        for code in codes_areas.values():
-            if code == form.profile_code.data and int(form.profile.data) == x:
-                break
-            else:
-                x += 1
-        print(x)
-        if x != 6:
+        if form.access_code.data == code:
             hashed_password = generate_password_hash(form.password.data,'sha256')
-            signup = conection.execute_query("INSERT INTO usuarios (nombre,apellido,usuario,contraseña,perfil) VALUES (%s,%s,%s,%s,%s)",3,[form.name.data,form.lastname.data,form.user.data,hashed_password,form.profile.data])
-            if signup == 'ok':
-                conection.close()
+            try:
+                database.execute_query("INSERT INTO users (dni,password) VALUES (%s,%s)",
+                    [form.dni.data,hashed_password])
+                database.execute_query("INSERT INTO parents (name,lastname,email,cellphone,user_id)" 
+                    "VALUES (%s,%s,%s,%s,LAST_INSERT_ID())",[form.name.data,form.lastname.data,form.email.data,form.cellphone.data])
+                database.save()
+                database.close()
                 return redirect(url_for('auth.login'))
-            else:
+
+            except Exception as e:
+                print(e)
+                database.discard()
                 return redirect(url_for('auth.signup'))    
         else:       
-            flash("Código de departamento incorrecto",category='danger')
+            flash("Wrong code!",category='danger')
             return redirect(url_for('auth.signup'))
 
-    return render_template('auth/registro.html',form=form)
+    return render_template('auth/signup.html',form=form)
 
 @auth.route('/login',methods=['GET','POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('warriors.warriors_home'))
     form = Login()
-    conection = Database("usuario")
+    database = Database("usuario")
 
     if form.log_in.data and form.validate():
-        user = conection.execute_query("SELECT usuario_id,nombre,apellido,usuario,contraseña,perfil FROM usuarios WHERE usuario = %s",1,[form.user.data])
+        user = database.execute_query("SELECT usuario_id,nombre,apellido,usuario,contraseña,perfil FROM usuarios WHERE usuario = %s",1,[form.user.data])
         i = 0
         for user_data in user:
             if check_password_hash(user_data[4],form.password.data):
                 logged_user = Userdata(user_data[0],user_data[1],user_data[2],user_data[3],user_data[5])
                 login_user(logged_user)
-                conection.close()
+                database.close()
                 return redirect(url_for('warriors.warriors_home'))
             else:
                 flash("Contraseña incorrecta",category='danger')

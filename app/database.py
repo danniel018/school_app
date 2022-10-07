@@ -26,22 +26,16 @@ class Database:
   
         self.cursor = self.db.cursor(buffered =True)
         
-    def execute_query(self,query,crud,data=None):
+    def execute_query(self,query,crud=0,data=None):
        
         self.cursor.execute(query,data)
         if crud == 1:
             return self.cursor
-        else:
-            try:
-                return True
-            except Exception as e:
-                print (e)
-                return False
-
+        
+                
     def save(self):
         self.db.commit()
-        return True
-
+        
     def discard(self):
         self.db.rollback()
     

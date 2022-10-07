@@ -1,0 +1,203 @@
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+    <div class="position-sticky pt-3">
+    <ul class="nav flex-column">
+        {% if current_user.perfil == 1 %}
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">
+                    <span data-feather="home" class="align-text-bottom"></span>
+                    Gerencia <span id="department" ></span>
+                </a>
+            </li>
+        {% elif current_user.perfil == 5 %}
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">
+                <span data-feather="home" class="align-text-bottom"></span>
+                Tesorería <span id="department" ></span>
+            </a>
+        </li>
+        {% elif current_user.perfil == 3 %}
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">
+                Compras <span id="department" ></span>
+            </a>
+        </li>
+        
+        {% elif current_user.perfil == 2 %}
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">
+                Licitaciones <span id="department" ></span>
+            </a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">
+                Contabilidad <span id="department" ></span>
+            </a>
+        </li>
+        {% endif %}
+
+        
+        <li class="nav-item">
+            <a class="nav-link" href="#collapseExample" id="navbarDropdown" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
+              Contratos Vigentes <span id="current-company" style="color: rgb(48, 114, 236);"></span>
+            </a>
+            <div class="collapse" id="collapseExample">
+                <div class="sidebar-item">
+                    <div class="card card-body">
+                        <a class="nav-link" href="{{url_for('warriors.current',empresa=3)}}">
+                            <span data-feather="file" class="align-text-bottom"></span>
+                            Warriors Company
+                        </a>                   
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <div class="card card-body">
+                        <a class="nav-link" href="{{url_for('warriors.current',empresa=2)}}">
+                            <span data-feather="file" class="align-text-bottom"></span>
+                            Fernando Guerrero
+                        </a>                   
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <div class="card card-body">
+                        <a class="nav-link" href="{{url_for('warriors.current',empresa=1)}}">
+                            <span data-feather="file" class="align-text-bottom"></span>
+                            Bienservicios
+                        </a>                   
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <div class="card card-body">
+                        <a class="nav-link" href="{{url_for('warriors.current',empresa=4)}}">
+                            <span data-feather="file" class="align-text-bottom"></span>
+                            OSPEC
+                        </a>                   
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <div class="card card-body">
+                        <a class="nav-link" href="{{url_for('warriors.current',empresa=5)}}">
+                            <span data-feather="file" class="align-text-bottom"></span>
+                            Uniones temporales
+                        </a>                   
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="#">
+            <span data-feather="file" class="align-text-bottom"></span>
+            Contratos finalizados
+        </a>
+        </li>
+        {% if current_user.perfil == 5 %}
+        <li class="nav-item">
+        <a class="nav-link" href="{{url_for('tesoreria.all_payments')}}">
+            <span data-feather="shopping-cart" class="align-text-bottom"></span>
+            Pagos
+        </a>
+        </li>
+        {% endif %}
+
+        {% if current_user.perfil == 2 %}
+            <li class="nav-item">
+                <a class="nav-link" href="#collapsenewcontract" id="navbarDropdown2" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
+                Nuevo Contrato <span id="current-company-new" style="color: rgb(48, 114, 236);"></span>
+                </a>
+                <div class="collapse" id="collapsenewcontract">
+                    <div class="sidebar-item">
+                        <div class="card card-body">
+                            <a class="nav-link" href="{{url_for('licitaciones.new_contract',empresa=3)}}">
+                                <span data-feather="file" class="align-text-bottom"></span>
+                                Warriors Company
+                            </a>                   
+                        </div>
+                    </div>
+                    <div class="sidebar-item">
+                        <div class="card card-body">
+                            <a class="nav-link" href="{{url_for('licitaciones.new_contract',empresa=2)}}">
+                                <span data-feather="file" class="align-text-bottom"></span>
+                                Fernando Guerrero
+                            </a>                   
+                        </div>
+                    </div>
+                    <div class="sidebar-item">
+                        <div class="card card-body">
+                            <a class="nav-link" href="{{url_for('licitaciones.new_contract',empresa=1)}}">
+                                <span data-feather="file" class="align-text-bottom"></span>
+                                Bienservicios
+                            </a>                   
+                        </div>
+                    </div>
+                    <div class="sidebar-item">
+                        <div class="card card-body">
+                            <a class="nav-link" href="{{url_for('licitaciones.new_contract',empresa=4)}}">
+                                <span data-feather="file" class="align-text-bottom"></span>
+                                OSPEC
+                            </a>                   
+                        </div>
+                    </div>
+                    <div class="sidebar-item">
+                        <div class="card card-body">
+                            <a class="nav-link" href="{{url_for('licitaciones.new_contract',empresa=5)}}">
+                                <span data-feather="file" class="align-text-bottom"></span>
+                                Uniones temporales
+                            </a>                   
+                        </div>
+                    </div>
+                </div>
+            </li>
+        {% endif %}
+        
+        {% if current_user.perfil != 2 %}
+            <li class="nav-item">
+            <a class="nav-link" href="{{url_for('warriors.suppliers_list')}}">
+                <span data-feather="users" class="align-text-bottom"></span>
+                Proveedores
+            </a>
+            </li>
+        {% endif %}
+        
+        <li class="nav-item">
+        <a class="nav-link" href="{{url_for('warriors.entities')}}">
+            <span data-feather="layers" class="align-text-bottom"></span>
+            Entidades contratantes
+        </a>
+        </li>
+    </ul>
+
+    <!-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+        <span>Saved reports</span>
+        <a class="link-secondary" href="#" aria-label="Add a new report">
+        <span data-feather="plus-circle" class="align-text-bottom"></span>
+        </a>
+    </h6>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+        <a class="nav-link" href="#">
+            <span data-feather="file-text" class="align-text-bottom"></span>
+            Current month
+        </a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="#">
+            <span data-feather="file-text" class="align-text-bottom"></span>
+            Last quarter
+        </a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="#">
+            <span data-feather="file-text" class="align-text-bottom"></span>
+            Social engagement
+        </a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="#">
+            <span data-feather="file-text" class="align-text-bottom"></span>
+            Year-end sale
+        </a>
+        </li>
+    </ul> -->
+    </div>
+</nav>
+<script src="{{url_for('static', filename='js/sidebar.js')}}"></script>

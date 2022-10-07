@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_login import LoginManager
-
+from .config import Config
 from .models import Userdata
-
+from .auth import views
 
 
 login_manager = LoginManager()
@@ -15,7 +15,9 @@ def load_user(id):
 
 def create_app():
     app = Flask(__name__)
-    
+    app.config.from_object(Config)
+
+    app.register_blueprint(views.auth)
     login_manager.init_app(app)
 
     return app

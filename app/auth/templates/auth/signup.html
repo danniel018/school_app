@@ -1,0 +1,82 @@
+{% extends 'base2.html' %}
+
+{% block title %}
+    {{super()}} | sign Up
+    
+{% endblock title %}
+    
+{% block content %}
+    <div class="user">
+        <div class="row justify-content-center mb-3">     
+            <div class="col-12 col-lg-3">
+                <h1 class="text-login">Sign up</h1>
+            </div>
+        </div>
+                
+        <form method="POST">
+            <div class="row justify-content-center mb-3">     
+                <div class="col-12 col-lg-3">
+                    {{form.hidden_tag()}}
+                    
+                    {{form.name.label(class="form-label")}}
+                    {{form.name(class="form-control")}}
+                    <!-- Button trigger modal -->
+                </div>
+                <div class="col-12 col-lg-3">
+                    {{form.lastname.label(class="form-label")}}
+                    {{form.lastname(class="form-control")}}
+                </div>
+            </div>
+            <div class="row justify-content-center mb-3">     
+                <div class="col-12 col-lg-3">
+                    {{form.dni.label(class="form-label")}}
+                    {{form.dni(class="form-control")}}
+                </div>
+                <div class="col-12 col-lg-3">
+                    {{form.email.label(class="form-label")}}
+                    {{form.email(class="form-control")}} 
+                </div>
+            </div>
+
+            <div class="row justify-content-center mb-3">  
+                <div class="col-12 col-lg-3">
+                    {{form.password.label(class="form-label")}}
+                    {{form.password(class="form-control")}}
+                </div>   
+                <div class="col-12 col-lg-3">
+                    {{form.password2.label(class="form-label")}}
+                    {{form.password2(class="form-control")}}
+                </div>
+               
+            </div>
+            <div class="row justify-content-center mb-3">     
+                <div class="col-12 col-lg-3">       
+                    {{form.access_code.label(class="form-label")}}
+                    {{form.access_code(class="form-control")}}
+                </div>
+            </div>
+            <div class="row justify-content-center mb-3">     
+                <div class="col-12 col-lg-3">
+                    <div class="d-grid gap-2">
+                    {{form.add_user(class="btn btn-success mt-3")}}
+                    <p class="text-login">Or Login</p>
+                    <a href="{{url_for('auth.login')}}" type="button" class="btn btn-outline-primary">Login</a>
+                    </div>
+                </div> 
+            </div>           
+        </form>
+    </div>
+        
+       
+    </div>
+    {% for field, errors in form.errors.items() %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>{{ ', '.join(errors) }}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+
+      </button>
+    </div>   
+    
+    {% endfor %}
+    
+{% endblock content %}
