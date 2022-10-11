@@ -19,20 +19,23 @@ def signup():
     database = Database()
     code = Access_code()
     if form.add_user.data and form.validate():
-        if form.access_code.data == code:
+        if form.access_code.data == code.code:
             hashed_password = generate_password_hash(form.password.data,'sha256')
             try:
-                database.execute_query("INSERT INTO users (dni,password) VALUES (%s,%s)",
-                    [form.dni.data,hashed_password])
+                database.execute_query("INSERT INTO users (user_dni,password,user_type) VALUES (%s,%s,%s)",0,
+                    [str(form.dni.data),hashed_password,2])
+                
                 database.execute_query("INSERT INTO parents (name,lastname,email,cellphone,user_id)" 
-                    "VALUES (%s,%s,%s,%s,LAST_INSERT_ID())",[form.name.data,form.lastname.data,form.email.data,form.cellphone.data])
+                    "VALUES (%s,%s,%s,%s,LAST_INSERT_ID())",0,[form.name.data,form.lastname.data,form.email.data,form.cellphone.data])
                 database.save()
                 database.close()
+                flash("User signed up")
                 return redirect(url_for('auth.login'))
 
             except Exception as e:
                 print(e)
                 database.discard()
+                flash("error")
                 return redirect(url_for('auth.signup'))    
         else:       
             flash("Wrong code!",category='danger')
@@ -42,10 +45,10 @@ def signup():
 
 @auth.route('/login',methods=['GET','POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('warriors.warriors_home'))
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('warriors.warriors_home'))
     form = Login()
-    database = Database("usuario")
+    database = Database()
 
     if form.log_in.data and form.validate():
         user = database.execute_query("SELECT usuario_id,nombre,apellido,usuario,contraseña,perfil FROM usuarios WHERE usuario = %s",1,[form.user.data])

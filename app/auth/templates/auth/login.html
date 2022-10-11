@@ -1,0 +1,48 @@
+{% extends 'base2.html' %}
+
+{% block title %}
+    {{super()}} | Log in
+    
+{% endblock title %}
+    
+{% block content %}
+    <div class="user">
+        <div class="row justify-content-center mb-3">     
+            <div class="col-12 col-lg-3">
+                <h1 class="text-login">Login</h1>
+            </div>
+        </div>
+        <form method="POST">
+            <div class="row justify-content-center mb-3">     
+                <div class="col-12 col-lg-3">
+                    {{form.hidden_tag()}}
+                    
+                    {{form.dni.label(class="form-label")}}
+                    {{form.dni(class="form-control")}}
+                
+                    {{form.password.label(class="form-label")}}
+                    {{form.password(class="form-control")}}
+                </div>
+            </div>
+            <div class="row justify-content-center mb-3">     
+                <div class="col-12 col-lg-3">
+                    <div class="d-grid gap-2">
+                        {{form.log_in(class="btn btn-success")}}
+                        <p class="text-login">Or Sign up</p>
+                        <a href="{{url_for('auth.signup')}}" type="button" class="btn btn-outline-primary">sign up</a> 
+                    </div>                          
+                </div>
+            </div>    
+        </form>       
+    </div>
+    
+    {% for field, errors in form.errors.items() %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>{{ ', '.join(errors) }}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+      </button>
+    </div>   
+    
+    {% endfor %}
+    
+{% endblock content %}
