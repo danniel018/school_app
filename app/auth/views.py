@@ -13,7 +13,7 @@ auth = Blueprint('auth',__name__, url_prefix='/auth',template_folder='templates'
 def signup():
     
     if current_user.is_authenticated: 
-        return redirect(url_for('warriors.inicio'))
+        return redirect(url_for('parents.home'))
 
     form = New_user()
     database = Database()
@@ -45,14 +45,18 @@ def login():
     database = Database()
 
     if form.log_in.data and form.validate():
-        user = database.query_data("SELECT user_id,name,lastname,password,user_type FROM users WHERE email = %s",[form.email.data],return_cursor=True)
+        user = database.query_data("SELECT user_id,name,lastname,user_type,password FROM users WHERE email = %s",[form.email.data])
         i = 0
         for user_data in user:
             if check_password_hash(user_data[4],form.password.data):
-                logged_user = Userdata(user_data[0],user_data[1],user_data[2],user_data[3],user_data[5])
+                logged_user = Userdata(user_data[0],user_data[1],user_data[2],user_data[3])
                 login_user(logged_user)
                 database.close()
-                return redirect(url_for('warriors.warriors_home'))
+                if user_data[3] == 'teacher':
+                    return redirect(url_for('teachers.home'))
+                else:
+                    return redirect(url_for('parents.home'))
+
             else:
                 flash("Contraseña incorrecta",category='danger')
             i += 1

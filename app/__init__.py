@@ -3,6 +3,9 @@ from flask_login import LoginManager
 from .config import Config
 from .models import Userdata
 from .auth import views
+from .teachers.views import teachers
+from .parents.views import parents
+
 
 
 login_manager = LoginManager()
@@ -18,6 +21,9 @@ def create_app():
     app.config.from_object(Config)
 
     app.register_blueprint(views.auth)
+    app.register_blueprint(teachers)
+    app.register_blueprint(parents)
+
     login_manager.init_app(app)
 
     return app

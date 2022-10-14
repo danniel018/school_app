@@ -26,8 +26,10 @@ class Database:
   
         self.cursor = self.db.cursor(buffered =True)
         
-    def query_data(self,query):
-        self.cursor.execute(query)
+    def query_data(self,query,data,return_data=0):
+        self.cursor.execute(query,data)
+        if return_data == 0:
+            return self.cursor
         
     def modify_data(self,query,data):
         self.cursor.execute(query,data)
