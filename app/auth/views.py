@@ -17,29 +17,23 @@ def signup():
 
     form = New_user()
     database = Database()
-    code = Access_code()
-    if form.add_user.data and form.validate():
-        if form.access_code.data == code.code:
-            hashed_password = generate_password_hash(form.password.data,'sha256')
-            try:
-                database.execute_query("INSERT INTO users (user_dni,password,user_type) VALUES (%s,%s,%s)",0,
-                    [str(form.dni.data),hashed_password,2])
-                
-                database.execute_query("INSERT INTO parents (name,lastname,email,cellphone,user_id)" 
-                    "VALUES (%s,%s,%s,%s,LAST_INSERT_ID())",0,[form.name.data,form.lastname.data,form.email.data,form.cellphone.data])
-                database.save()
-                database.close()
-                flash("User signed up")
-                return redirect(url_for('auth.login'))
 
-            except Exception as e:
-                print(e)
-                database.discard()
-                flash("error")
-                return redirect(url_for('auth.signup'))    
-        else:       
-            flash("Wrong code!",category='danger')
-            return redirect(url_for('auth.signup'))
+    if form.add_user.data and form.validate():
+        hashed_password = generate_password_hash(form.password.data,'sha256')
+        try:
+            database.modify_data("INSERT INTO users (name,lastname,email,password,user_type) VALUES (%s,%s,%s,%s,%s)",
+                [form.name.data,form.lastname.data,form.email.data,hashed_password,'teacher'])
+            database.save()
+            database.close()
+            flash("User signed up",category='success')
+            return redirect(url_for('auth.login'))
+
+        except Exception as e:
+            print(e)
+            database.discard()
+            flash("error",category='danger')
+            return redirect(url_for('auth.signup'))    
+        
 
     return render_template('auth/signup.html',form=form)
 
@@ -51,7 +45,7 @@ def login():
     database = Database()
 
     if form.log_in.data and form.validate():
-        user = database.execute_query("SELECT usuario_id,nombre,apellido,usuario,contraseña,perfil FROM usuarios WHERE usuario = %s",1,[form.user.data])
+        user = database.query_data("SELECT user_id,name,lastname,password,user_type FROM users WHERE email = %s",[form.email.data],return_cursor=True)
         i = 0
         for user_data in user:
             if check_password_hash(user_data[4],form.password.data):

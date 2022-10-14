@@ -26,13 +26,15 @@ class Database:
   
         self.cursor = self.db.cursor(buffered =True)
         
-    def execute_query(self,query,crud=0,data=None):
-       
-        self.cursor.execute(query,data)
-        if crud == 1:
-            return self.cursor
+    def query_data(self,query):
+        self.cursor.execute(query)
         
-                
+    def modify_data(self,query,data):
+        self.cursor.execute(query,data)
+        
+        
+
+
     def save(self):
         self.db.commit()
         

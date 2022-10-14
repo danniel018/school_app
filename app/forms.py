@@ -8,18 +8,14 @@ class Ids (FlaskForm):
     id=IntegerField("id",validators=[DataRequired()])
 
 class Users(FlaskForm):
-    dni=IntegerField("DNI/c.c",validators=[DataRequired()])
-    password = PasswordField("Password",validators=[DataRequired()])
+    email=EmailField("Email*",validators=[DataRequired(),Length(max=50,message="")])
+    password = PasswordField("Password*",validators=[DataRequired()])
 
 
 class New_user(Users):
-    name=StringField("Name",validators=[DataRequired(),Length(max=20,message="")])
-    lastname=StringField("Lastname",validators=[DataRequired(),Length(max=20,message="")]) 
-    email=EmailField("Email",validators=[DataRequired(),Length(max=50,message="")])
-    cellphone=StringField("Cellphone",validators=[DataRequired(),Length(max=10,message="")])
-    password2 = PasswordField('confirm password',validators=[InputRequired(),EqualTo('password', message='Passwords are not equal')])
-    #child_dni = 
-    access_code = PasswordField('Access code',validators=[InputRequired()])
+    name=StringField("Name*",validators=[DataRequired(),Length(max=20,message="")])
+    lastname=StringField("Lastname*",validators=[DataRequired(),Length(max=20,message="")]) 
+    password2 = PasswordField('confirm password*',validators=[InputRequired(),EqualTo('password', message='Passwords are not equal')])
     add_user = SubmitField("Sign Up")    
 
 class Login(Users):
