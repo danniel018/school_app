@@ -5,4 +5,4 @@ venv/
 *.json
 *.txt
 *test.py
-*.mwb
+

@@ -6,8 +6,50 @@
 {% endblock title %}
    
 {% block content %}
+
+    <div class="row justify-content-center">
+        <div class="col-3">
+            <h1>Your Classes</h1>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-4">
+            <div class="card text-white bg-success mb-3" style="max-width: 18rem; background-color: rgb(63, 131, 127)  !important;">
+                <div class="card-header">Class</div>
+                <div class="card-body">
+                  <h5 class="card-title">Name: <a href="{{url_for('teachers.class_info',group=classes[0][0])}}">{{classes[0][1]}}</a> </h5>
+                  <h6 class="card-text">Group: {{classes[0][0]}}</h6>
+                  <br>
+                  <p>Tue 9-11, Fri 11-13</p>
+                </div>
+              </div>
+        </div>
+        <div class="col-4">
+            <div class="card text-white bg-success mb-3" style="max-width: 18rem; background-color: rgb(141, 89, 171)  !important;">
+                <div class="card-header">Class</div>
+                <div class="card-body">
+                  <h5 class="card-title">Name: <a href="{{url_for('teachers.class_info',group=classes[1][0])}}">{{classes[1][1]}}</a> </h5>
+                  <h6 class="card-text">Group: {{classes[1][0]}}</h6>
+                  <br>
+                  <p>Mon 14-15, Wed 10-13</p>
+                </div>
+              </div>
+        </div>
+        <div class="col-4">
+            <div class="card text-white bg-success mb-3" style="max-width: 18rem; background-color: rgb(198, 144, 37)  !important;">
+                <div class="card-header">Class</div>
+                <div class="card-body">
+                  <h5 class="card-title">Name: {{classes[2][1]}}</h5>
+                  <h6 class="card-text">Group: {{classes[2][0]}}</h6>
+                  <br>
+                  <p>Mon 10-12, Wed 9-10, Fri 8-9</p>
+                </div>
+              </div>
+        </div>
+    </div>
     
-    <h1>Your Classes</h1>
+    
     
     
 {% endblock content %}
