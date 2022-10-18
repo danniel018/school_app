@@ -5,7 +5,7 @@ from .models import Userdata
 from .auth import views
 from .teachers.views import teachers
 from .parents.views import parents
-
+from .database import db
 
 
 login_manager = LoginManager()
@@ -19,7 +19,7 @@ def load_user(id):
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-
+    db.init_app(app)
     app.register_blueprint(views.auth)
     app.register_blueprint(teachers)
     app.register_blueprint(parents)

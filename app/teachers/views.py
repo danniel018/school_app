@@ -14,3 +14,10 @@ def home():
     
 
     return render_template('teachers/home.html')
+
+@teachers.route('/classes')
+def teacher_classes():
+    
+
+
+    return render_template('teachers/classes.html')

@@ -3,6 +3,9 @@ from flask import flash
 from .config import DB_connection
 import os
 import logging
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 cloud_user = os.environ.get('CLOUD_SQL_USERNAME')
 cloud_db_password = os.environ.get('CLOUD_SQL_PASSWORD')
@@ -31,12 +34,9 @@ class Database:
         if return_data == 0:
             return self.cursor
         
-    def modify_data(self,query,data):
+    def modify_data(self, query:str, data:list):
         self.cursor.execute(query,data)
         
-        
-
-
     def save(self):
         self.db.commit()
         

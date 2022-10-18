@@ -4,3 +4,5 @@ venv/
 *yaml
 *.json
 *.txt
+*test.py
+*.mwb

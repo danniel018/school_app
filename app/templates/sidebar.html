@@ -1,37 +1,18 @@
 <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
     <div class="position-sticky pt-3">
     <ul class="nav flex-column">
-        {% if current_user.perfil == 1 %}
+        {% if current_user.user_type == 'teacher' %}
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#">
                     <span data-feather="home" class="align-text-bottom"></span>
-                    Gerencia <span id="department" ></span>
+                    Teachers Home <span id="department" ></span>
                 </a>
             </li>
-        {% elif current_user.perfil == 5 %}
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">
-                <span data-feather="home" class="align-text-bottom"></span>
-                Tesorería <span id="department" ></span>
-            </a>
-        </li>
-        {% elif current_user.perfil == 3 %}
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">
-                Compras <span id="department" ></span>
-            </a>
-        </li>
         
-        {% elif current_user.perfil == 2 %}
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">
-                Licitaciones <span id="department" ></span>
-            </a>
-        </li>
         {% else %}
         <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#">
-                Contabilidad <span id="department" ></span>
+                Parents Home <span id="department" ></span>
             </a>
         </li>
         {% endif %}
@@ -39,24 +20,27 @@
         
         <li class="nav-item">
             <a class="nav-link" href="#collapseExample" id="navbarDropdown" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
-              Contratos Vigentes <span id="current-company" style="color: rgb(48, 114, 236);"></span>
+              My Classes <span id="current-company" style="color: rgb(48, 114, 236);"></span>
             </a>
             
         </li>
         <li class="nav-item">
         <a class="nav-link" href="#">
             <span data-feather="file" class="align-text-bottom"></span>
-            Contratos finalizados
+            My Group
         </a>
         </li>
-        
-
-        
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <span data-feather="file" class="align-text-bottom"></span>
+                Reports
+            </a>
+        </li>
         
         <li class="nav-item">
         <a class="nav-link" href="{{url_for('parents.home')}}">
             <span data-feather="layers" class="align-text-bottom"></span>
-            Entidades contratantes
+            Assessments
         </a>
         </li>
     </ul>

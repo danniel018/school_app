@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from app.database import Database
 from app.config import Access_code
 from app.models import Userdata
-
+from app.database import db
 auth = Blueprint('auth',__name__, url_prefix='/auth',template_folder='templates') 
 
 @auth.route('/signup',methods=['GET','POST'])
@@ -42,16 +42,17 @@ def login():
     # if current_user.is_authenticated:
     #     return redirect(url_for('warriors.warriors_home'))
     form = Login()
-    database = Database()
+    #database = Database()
 
     if form.log_in.data and form.validate():
-        user = database.query_data("SELECT user_id,name,lastname,user_type,password FROM users WHERE email = %s",[form.email.data])
+        #user = database.query_data("SELECT user_id,name,lastname,user_type,password FROM users WHERE email = %s",[form.email.data])
+        user = db.session.execute("SELECT user_id,name,lastname,user_type,password FROM users WHERE email = :email",{'email':form.email.data})
         i = 0
         for user_data in user:
             if check_password_hash(user_data[4],form.password.data):
                 logged_user = Userdata(user_data[0],user_data[1],user_data[2],user_data[3])
                 login_user(logged_user)
-                database.close()
+                #database.close()
                 if user_data[3] == 'teacher':
                     return redirect(url_for('teachers.home'))
                 else:
