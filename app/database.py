@@ -13,6 +13,22 @@ cloud_db_name = os.environ.get('CLOUD_SQL_DATABASE_NAME')
 cloud_connection_name = os.environ.get('CLOUD_SQL_CONNECTION_NAME')
 
 
+class QueriedData:
+
+    @classmethod
+    def return_one(cls,cursor):
+
+        data = [x[0] for x in cursor]
+        return data[0]
+
+
+    @classmethod
+    def return_row(cls,cursor):
+
+        data = [x for x in cursor]  
+        return data[0]      
+        
+
 
 class Database:
     

@@ -16,21 +16,20 @@ def signup():
         return redirect(url_for('parents.home'))
 
     form = New_user()
-    database = Database()
+    #database = Database()
 
     if form.add_user.data and form.validate():
         hashed_password = generate_password_hash(form.password.data,'sha256')
         try:
-            database.modify_data("INSERT INTO users (name,lastname,email,password,user_type) VALUES (%s,%s,%s,%s,%s)",
+            db.session.execute("INSERT INTO users (name,lastname,email,password,user_type) VALUES (%s,%s,%s,%s,%s)",
                 [form.name.data,form.lastname.data,form.email.data,hashed_password,'teacher'])
-            database.save()
-            database.close()
+            db.session.commit()
             flash("User signed up",category='success')
             return redirect(url_for('auth.login'))
 
         except Exception as e:
             print(e)
-            database.discard()
+            db.session.rollback()
             flash("error",category='danger')
             return redirect(url_for('auth.signup'))    
         
