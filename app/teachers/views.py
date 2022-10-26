@@ -24,9 +24,7 @@ def teacher_classes():
         "ON gp.grade_group_id = gs.grade_group_id JOIN subjects as s ON s.subject_id = gs "
         ".subject_id WHERE gs.teacher_id = :id AND gp.year = :year",{'id':current_user.id,'year':y.year})
 
-    lclass = [x for x in classes]
-
-    return render_template('teachers/classes.html',classes=lclass)
+    return render_template('teachers/classes.html',classes=QueriedData.return_rows(classes))
 
 @teachers.route('/classes/<int:grade_subject>') 
 def class_info(grade_subject):
@@ -43,5 +41,9 @@ def class_info(grade_subject):
         "cg ON c.child_id = cg.child_id JOIN grade_groups as gg ON cg.grade_group_id = gg.grade_group_id "
         "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  WHERE gs.grade_subject_id = :id",{'id':grade_subject})
 
+    week_data = db.session.execute("SELECT event_type,date,name,description FROM class_events WHERE WEEK(date) = WEEK(NOW())")
+    week_events = QueriedData.return_rows(week_data)
+    print(week_events)
 
-    return render_template('teachers/class_info.html',students = students, group= class_data[1], classs= class_data[2]) 
+
+    return render_template('teachers/class_info.html',students = students, group= class_data[1], classs= class_data[2],events = week_events) 

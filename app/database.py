@@ -25,8 +25,16 @@ class QueriedData:
     @classmethod
     def return_row(cls,cursor):
 
-        data = [x for x in cursor]  
-        return data[0]      
+        data = [x for x in cursor]
+          
+        return data[0] 
+
+    @classmethod
+    def return_rows(cls,cursor):
+        print(cursor)
+        print('sdfsd')
+        return [x for x in cursor]  
+              
         
 
 

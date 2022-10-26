@@ -27,26 +27,15 @@
             <button class="btn btn-success btn-lg">New Event +</button>
         </div>
           <div class="col-4">
-            <div class="accordion" id="accordionExample">
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" >
-                      <strong>Students list</strong> 
-                    </button>
-                  </h2>
-                  <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                        {% for x,y in students  %}
-                            <div class="row">
-                                <div class="col">
-                                    <h6 class="text">{{x}}</h6> <h6 class="text">{{y}}</h6>
-                                </div>
-                            </div>       
-                        {% endfor %}
-                    </div>
-                  </div>
-                </div>
-            </div> 
+            <div class="card text-white bg-success mb-3" style="max-width: 18rem; background-color: rgb(181, 68, 152)  !important;">
+              <div class="card-header">Last added Event</div>
+              <div class="card-body">
+                <h5 class="card-title">Date: Tue 25/10/22 </h5>
+                <h6 class="card-text">Assignment: No</h6>
+                <h6 class="card-text">Assesment: Yes</h6>
+                <br>
+              </div>
+            </div>
             
         </div>
         
@@ -55,6 +44,14 @@
             <div class="card text-white bg-success mb-3" style="max-width: 22rem; background-color: rgb(220, 165, 36)  !important;">
               <div class="card-header"><h4>Week Events</h3></div>
               <div class="card-body">
+                {% for a in events %}
+                <div class="mt-3" style="border-bottom: 3px solid;">
+                  <h6 class="card-title">Event: {{a[0]}}</h6>
+                  <h6 class="card-title">Date: {{a[1]}} </h6>
+                  <h6 class="card-text">Name: {{a[2]}}</h6>
+                  <h6 class="card-text">Description: {{a[3]}} </h6>
+                </div>
+                {% endfor %}
                 <div class="mt-3" style="border-bottom: 3px solid;">
                   <h6 class="card-title">Event: Assignment </h6>
                   <h6 class="card-title">Date: Wed 26/10/22 </h6>
@@ -70,6 +67,9 @@
                 </div>
                 
                 <br>
+              </div>
+              <div class="card-footer">
+                <a href="#" style="color: white;">All Bimester events</a> 
               </div>
             </div>
         </div>
@@ -113,6 +113,35 @@
         </table>
       </div>
   </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-5">
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" >
+                <strong>Students list</strong> 
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                  {% for x,y in students  %}
+                      <div class="row">
+                          <div class="col">
+                              <h6 class="text">{{x}}</h6> <h6 class="text">{{y}}</h6>
+                          </div>
+                      </div>       
+                  {% endfor %}
+              </div>
+            </div>
+          </div>
+      </div> 
+      </div>
+      <div class="col-5 offset-2">
+        <div class="d-grid gap-2">
+          <button class="btn btn-success">Class Grades <i class="bi bi-mortarboard"></i></button>
+        </div>
+      </div>
     </div>
     
     
