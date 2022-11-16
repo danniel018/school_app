@@ -34,6 +34,23 @@ class QueriedData:
         print(cursor)
         print('sdfsd')
         return [x for x in cursor]  
+
+    
+    @classmethod
+    def return_dic(cls,cursor,*keys):
+        
+        main = []
+        for x in cursor:
+            data = {}
+            for y in range(len(keys)):
+                data[keys[y]] = x[y]
+            main.append(data)
+
+        return main
+
+
+                
+
               
         
 
