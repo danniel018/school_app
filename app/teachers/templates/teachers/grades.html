@@ -1,12 +1,17 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {{super()}} | Classes
+    {{super()}} | Grades
     
 {% endblock title %}
    
 {% block content %}
-    <h1>grades</h1>
+  <div class="row justify-content-center">
+    <div class="col-3"> 
+        <h1>{{group}} {{classs}}</h1>
+        <h3>Grades</h3>
+    </div>
+  </div>
 
     <div class="row mt-4">
         <div class="col col-lg-8">
@@ -15,26 +20,19 @@
               <table class="table table-dark table-sm">
               <thead>
                 <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Lastname</th>
-                  <th scope="col">Task 1</th>
-                  <th scope="col">Task 2</th>
-                  <th scope="col">Task 3</th>
-                  <th scope="col">Task 4</th>
-                  
+                  {% for a in grades[0].keys()  %}
+                    <th scope="col">{{a}}</th>
+                  {% endfor %}
+                 
                 </tr>
               </thead>
   
               <tbody>
                 {% for x in grades  %}
                   <tr>
-                    
-                    <td>{{x['name']}}</td>
-                    <td>{{x['lastname']}}</td>
-                    <td>{{x['task 1']}}</td>
-                    <td>{{x['task 2']}}</td>
-                    <td>{{x['lab 1']}}</td>
-                    <td>{{x['quiz 2']}}</td>
+                  {% for y in x.values() %}
+                    <td>{{y}}</td>
+                    {% endfor %}
                   </tr>
                 {% endfor %} 
               </tbody>
