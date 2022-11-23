@@ -75,7 +75,7 @@ def class_info(grade_subject):
         except Exception as e:
             db.session.rollback()
             print(e)
-            flash('error',category='Danger') 
+            flash('error adding the event',category='Danger') 
         finally:
             return redirect (url_for('teachers.class_info',grade_subject = grade_subject))
 
@@ -95,8 +95,6 @@ def grades(grade_subject):
     if class_data[0] != current_user.id:
         abort(403)
 
-    
-
     students = db.session.execute("SELECT c.child_id, c.lastname,c.name FROM children as c JOIN children_grade_groups as "
         "cg ON c.child_id = cg.child_id JOIN grade_groups as gg ON cg.grade_group_id = gg.grade_group_id "
         "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  WHERE gs.grade_subject_id = :id "
@@ -114,8 +112,51 @@ def grades(grade_subject):
                 y[grades[x][0]] = grades[x][2]  
                 break
 
-    print(students)
-
-    
+    #print(students)
 
     return render_template('teachers/grades.html',grades = students, group = class_data[1], classs = class_data[2])
+
+
+@teachers.route('/classes/<int:grade_subject>/events')
+def class_events(grade_subject):
+
+    class_ = db.session.execute("SELECT gs.teacher_id,gg.name, s.name FROM grades_subjects as gs "
+        "JOIN grade_groups as gg ON gs.grade_group_id = gg.grade_group_id JOIN subjects as "
+        "s ON s.subject_id = gs.subject_id WHERE gs.grade_subject_id  = :id",{'id':grade_subject})
+    class_data = QueriedData.return_row(class_) 
+    
+    if class_data[0] != current_user.id:
+        abort(403)
+
+    events = db.session.execute("SELECT name,description,date,event_id FROM class_events WHERE grade_subject_id = :id "
+        "AND bimester = 4 ORDER BY date",{'id':grade_subject}) 
+    events = QueriedData.return_rows(events) 
+
+   
+    return render_template('teachers/events.html', group = class_data[1], classs = class_data[2], events = events,
+        grade_subject = grade_subject)
+
+
+@teachers.route('/classes/<int:grade_subject>/events/<int:event>')
+def event(grade_subject,event):
+
+    class_ = db.session.execute("SELECT gs.teacher_id,gg.name, s.name FROM grades_subjects as gs "
+        "JOIN grade_groups as gg ON gs.grade_group_id = gg.grade_group_id JOIN subjects as "
+        "s ON s.subject_id = gs.subject_id WHERE gs.grade_subject_id  = :id",{'id':grade_subject})
+    class_data = QueriedData.return_row(class_) 
+    
+    if class_data[0] != current_user.id:
+        abort(403)
+
+    class_event = db.session.execute("SELECT event_type,name,description,date,posted_on FROM "
+        "class_events WHERE event_id=:id",{'id':event})
+    class_event = QueriedData.return_row(class_event) 
+
+    students = db.session.execute("SELECT c.child_id, c.lastname,c.name FROM children as c JOIN children_grade_groups as "
+        "cg ON c.child_id = cg.child_id JOIN grade_groups as gg ON cg.grade_group_id = gg.grade_group_id "
+        "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  WHERE gs.grade_subject_id = :id "
+        "ORDER BY lastname",{'id':grade_subject}) 
+    students = QueriedData.return_rows(students)
+
+    return render_template('teachers/event.html', group = class_data[1], classs = class_data[2],
+        grade_subject = grade_subject, event = class_event, students = students)

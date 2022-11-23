@@ -56,13 +56,11 @@
                   </div>
                   {% endfor %}
                 {% endif %}
-                
-                
-                
+                  
                 <br>
               </div>
               <div class="card-footer">
-                <a href="#" style="color: white;">All Bimester events</a> 
+                <a href="{{url_for('teachers.class_events',grade_subject = grade_subject )}}" style="color: white;">All Bimester events</a> 
               </div>
             </div>
         </div>
@@ -182,16 +180,9 @@
             {{form.add_event(class="btn btn-success")}}
           </div>
         </div> 
-
       </div>
-      
-
     </form>
   </div>
 </div>
-    
-    
-    
-    
     
 {% endblock content %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{super()}} | Events
+{% endblock title %}
+
+{% block content %}
+
+    <div class="row justify-content-center">
+        <div class="col-3"> 
+            <h1 class="title">{{group}} {{classs}}</h1>
+            <h3 class="title">events</h3>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col col-lg-8">
+          
+          <div class="table-responsive">
+              <table class="table table-dark table-sm">
+              <thead>
+                <tr> 
+                    <th scope="col">Event</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Submit date</th>
+                </tr>
+              </thead>
+  
+              <tbody>
+                {% for x in events  %}
+                  <tr>              
+                    <td> <a href="{{url_for('teachers.event',grade_subject = grade_subject, event=x[3])}}">{{x[0]}}</a></td>
+                    <td>{{x[1]}}</td>     
+                    <td>{{x[2]}}</td>
+                  </tr>
+                {% endfor %} 
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+
+{% endblock content %}
