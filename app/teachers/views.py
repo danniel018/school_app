@@ -102,19 +102,36 @@ def grades(grade_subject):
     
     students = QueriedData.return_dic(students,'id','lastname','name') 
 
-    grades = db.session.execute("SELECT e.name, g.child_id, g.grade FROM grades as g JOIN class_events as e ON g.event_id = "
-        "e.event_id WHERE grade_subject_id = :id",{'id':grade_subject})
+
+    events = db.session.execute("SELECT event_id,name FROM class_events WHERE grade_subject_id =2 AND "
+        "bimester = 4 ORDER BY date",{'id':grade_subject})
+    events = QueriedData.return_rows(events)
+    print(events)
+    for y in students:
+        s_events = {}
+        for x in events:
+            event_ = {}
+            event_['event_id'] = x[0] 
+            event_['grade'] = ''
+            s_events[x[1]] = event_
+        y['events'] = s_events
+
+    grades = db.session.execute("SELECT g.child_id, e.event_id, g.grade FROM grades as g JOIN class_events "
+        "as e ON g.event_id = e.event_id WHERE grade_subject_id = :id",{'id':grade_subject})
     grades = QueriedData.return_rows(grades) 
 
-    for x in range (len(grades)):
-        for y in students:
-            if y['id'] == grades[x][1]:
-                y[grades[x][0]] = grades[x][2]  
-                break
+    for y in students:
+        for x in grades:
+            if y['id'] == x[0]:
+                for z in y['events'].values():
+                    if z['event_id'] == x[1]:
+                        z['grade'] = x[2]  
+            
 
-    #print(students)
+    print(students)
 
-    return render_template('teachers/grades.html',grades = students, group = class_data[1], classs = class_data[2])
+    return render_template('teachers/grades.html',grades = students, group = class_data[1], classs = class_data[2],
+        events = events)
 
 
 @teachers.route('/classes/<int:grade_subject>/events')
@@ -152,11 +169,22 @@ def event(grade_subject,event):
         "class_events WHERE event_id=:id",{'id':event})
     class_event = QueriedData.return_row(class_event) 
 
-    students = db.session.execute("SELECT c.child_id, c.lastname,c.name FROM children as c JOIN children_grade_groups as "
+    students = db.session.execute("SELECT c.child_id, c.lastname,c.name,NULL FROM children as c JOIN children_grade_groups as "
         "cg ON c.child_id = cg.child_id JOIN grade_groups as gg ON cg.grade_group_id = gg.grade_group_id "
-        "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  WHERE gs.grade_subject_id = :id "
-        "ORDER BY lastname",{'id':grade_subject}) 
-    students = QueriedData.return_rows(students)
+        "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  "
+        "WHERE gs.grade_subject_id = :id ORDER BY lastname",{'id':grade_subject}) 
+    students = QueriedData.return_dic(students,'id','lastname','name','grade')
 
+    grades = db.session.execute("SELECT child_id,grade FROM grades WHERE event_id = :event",{'event':event}) 
+    grades = QueriedData.return_rows(grades)
+
+    for x in students:
+        for y in grades:
+            if x['id'] == y[0]:
+                x['grade'] = y[1]
+                break
+            
+    
+    print(students)
     return render_template('teachers/event.html', group = class_data[1], classs = class_data[2],
         grade_subject = grade_subject, event = class_event, students = students)

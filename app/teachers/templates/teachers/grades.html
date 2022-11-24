@@ -20,18 +20,23 @@
               <table class="table table-dark table-sm">
               <thead>
                 <tr>
-                  {% for a in grades[0].keys()  %}
-                    <th scope="col">{{a}}</th>
+                  <th scope="col">#</th>
+                  <th scope="col">Lastname</th>
+                  <th scope="col">Name</th>
+                  {% for a in events  %}
+                    <th scope="col">{{a[1]}}</th>
                   {% endfor %}
                  
                 </tr>
               </thead>
-  
               <tbody>
                 {% for x in grades  %}
                   <tr>
-                  {% for y in x.values() %}
-                    <td>{{y}}</td>
+                    <td>{{x['id']}}</td>
+                    <td>{{x['lastname']}}</td>
+                    <td>{{x['name']}}</td>
+                  {% for y in x['events'].values() %}
+                      <td>{{y['grade']}}</td>
                     {% endfor %}
                   </tr>
                 {% endfor %} 
