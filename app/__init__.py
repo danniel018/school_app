@@ -1,11 +1,14 @@
 from flask import Flask
+from flask_restful import Api
 from flask_login import LoginManager
 from .config import Config
-from .models import Userdata
+from .models1 import Userdata 
 from .auth import views
 from .teachers.views import teachers
 from .parents.views import parents
+from .api.views import api
 from .database import db
+from .api.views import GroupGrades
 
 
 login_manager = LoginManager()
@@ -23,7 +26,12 @@ def create_app():
     app.register_blueprint(views.auth)
     app.register_blueprint(teachers)
     app.register_blueprint(parents)
-
+    
     login_manager.init_app(app)
+    app_api = Api(api)
+    app_api.add_resource(GroupGrades,'/grades/<int:subject>')
+    app.register_blueprint(api) 
+
+
 
     return app

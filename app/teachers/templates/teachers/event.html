@@ -34,13 +34,14 @@
                 <table class="table table-dark table-sm">
                 <thead>
                     <tr>
-                        <th scope="col" colspan="4" class="title"><h4>Grades</h4> </th> 
+                        <th scope="col" colspan="5" class="title"><h4>Grades</h4> </th> 
                     </tr>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Lastname</th>
                         <th scope="col">Name</th>
                         <th scope="col">Grade</th>
+                        <th scope="col"></th>
                         
                     </tr>
                 </thead>
@@ -49,10 +50,9 @@
                     {% for x in students  %}
                         <tr>
                             {% for y in x.values()  %}
-                                <td>{{y}}</td>
-                                
+                                <td>{{y}}</td> 
                             {% endfor %}
-
+                            <td><a href="#">Set/Update Grade</a></td>
                         </tr>
                     {% endfor %}
                 

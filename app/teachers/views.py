@@ -40,10 +40,10 @@ def class_info(grade_subject):
     
     form = Events()
 
-    students = db.session.execute("SELECT c.name, c.lastname FROM children as c JOIN children_grade_groups as "
+    students = db.session.execute("SELECT c.child_id,c.name, c.lastname FROM children as c JOIN children_grade_groups as "
         "cg ON c.child_id = cg.child_id JOIN grade_groups as gg ON cg.grade_group_id = gg.grade_group_id "
         "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  WHERE gs.grade_subject_id = :id",{'id':grade_subject})
-
+    students = QueriedData.return_rows(students)
 
     events =  db.session.execute("SELECT event_type,name,description,date FROM class_events WHERE grade_subject_id = :id "
         "AND bimester = 4 ORDER BY posted_on DESC",{'id':grade_subject})
@@ -69,13 +69,18 @@ def class_info(grade_subject):
         try:
             db.session.execute("INSERT INTO class_events (event_type,name,description,date,bimester,grade_subject_id) "
                 "VALUES (:eve,:nam,:des,:dat,:bim,:id)",{'eve':form.event_type.data.lower(),'nam':form.name.data,
-                'des':form.description.data,'dat':form.submit_date.data,'bim':4,'id':grade_subject})
+                'des':form.description.data,'dat':form.submit_date.data,'bim':4,'id':grade_subject}) 
+            new_event = db.session.execute("SELECT LAST_INSERT_ID()")
+            new_event = QueriedData.return_one(new_event)
+            print(new_event)
+            for x in students:
+                db.session.execute("INSERT INTO grades (event_id,child_id) VALUES (:eve, :chi)",{'eve':new_event,'chi':x[0]})
             db.session.commit()
             flash("New event created",category='success')
         except Exception as e:
             db.session.rollback()
             print(e)
-            flash('error adding the event',category='Danger') 
+            flash('error adding the event',category='danger') 
         finally:
             return redirect (url_for('teachers.class_info',grade_subject = grade_subject))
 
@@ -169,7 +174,7 @@ def event(grade_subject,event):
         "class_events WHERE event_id=:id",{'id':event})
     class_event = QueriedData.return_row(class_event) 
 
-    students = db.session.execute("SELECT c.child_id, c.lastname,c.name,NULL FROM children as c JOIN children_grade_groups as "
+    students = db.session.execute("SELECT c.child_id, c.lastname,c.name,'' FROM children as c JOIN children_grade_groups as "
         "cg ON c.child_id = cg.child_id JOIN grade_groups as gg ON cg.grade_group_id = gg.grade_group_id "
         "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  "
         "WHERE gs.grade_subject_id = :id ORDER BY lastname",{'id':grade_subject}) 
@@ -178,9 +183,12 @@ def event(grade_subject,event):
     grades = db.session.execute("SELECT child_id,grade FROM grades WHERE event_id = :event",{'event':event}) 
     grades = QueriedData.return_rows(grades)
 
+    print(len(grades))
+
     for x in students:
         for y in grades:
             if x['id'] == y[0]:
+                # if len(grades) <
                 x['grade'] = y[1]
                 break
             

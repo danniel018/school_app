@@ -5,7 +5,7 @@ from app.forms import New_user, Login
 from werkzeug.security import generate_password_hash,check_password_hash
 from app.database import Database
 from app.config import Access_code
-from app.models import Userdata
+
 
 parents = Blueprint('parents',__name__, url_prefix='/parents',template_folder='templates') 
 

@@ -127,10 +127,10 @@
           </h2>
           <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
             <div class="accordion-body">
-                {% for x,y in students  %}
+                {% for x in students  %}
                     <div class="row">
                         <div class="col">
-                            <h6 class="text">{{x}}</h6> <h6 class="text">{{y}}</h6>
+                            <h6 class="text">{{x[1]}}</h6> <h6 class="text">{{x[2]}}</h6>
                         </div>
                     </div>       
                 {% endfor %}

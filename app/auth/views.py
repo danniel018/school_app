@@ -5,7 +5,7 @@ from app.forms import New_user, Login
 from werkzeug.security import generate_password_hash,check_password_hash
 from app.database import Database
 from app.config import Access_code
-from app.models import Userdata
+from app.models1 import Userdata
 from app.database import db
 auth = Blueprint('auth',__name__, url_prefix='/auth',template_folder='templates') 
 
