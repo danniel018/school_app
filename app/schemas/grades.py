@@ -37,7 +37,9 @@ class ChildrenSchema(Schema):
     lastname = fields.String(required=True,validate=validate.Length(max=20))
     email = fields.String(required=True,validate=validate.Length(max=50))
     active = fields.String(required=True,
-        validate=validate.OneOf(('yes','no')))
-    grades = fields.Nested(lambda : GradesSchema(),dump_only = True,
-        only=('event','grade'))
+        validate=validate.OneOf(('yes','no')))   
+    grades = fields.Nested(lambda : GradesSchema(many=True, only=('event','grade')),dump_only = True) 
+    #grades.   
+
+    im = 'hjhg'    
    

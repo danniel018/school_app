@@ -100,43 +100,43 @@ def grades(grade_subject):
     if class_data[0] != current_user.id:
         abort(403)
 
-    students = db.session.execute("SELECT c.child_id, c.lastname,c.name FROM children as c JOIN children_grade_groups as "
-        "cg ON c.child_id = cg.child_id JOIN grade_groups as gg ON cg.grade_group_id = gg.grade_group_id "
-        "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  WHERE gs.grade_subject_id = :id "
-        "ORDER BY lastname",{'id':grade_subject}) 
+    # students = db.session.execute("SELECT c.child_id, c.lastname,c.name FROM children as c JOIN children_grade_groups as "
+    #     "cg ON c.child_id = cg.child_id JOIN grade_groups as gg ON cg.grade_group_id = gg.grade_group_id "
+    #     "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  WHERE gs.grade_subject_id = :id "
+    #     "ORDER BY lastname",{'id':grade_subject}) 
     
-    students = QueriedData.return_dic(students,'id','lastname','name') 
+    # students = QueriedData.return_dic(students,'id','lastname','name') 
 
 
-    events = db.session.execute("SELECT event_id,name FROM class_events WHERE grade_subject_id =2 AND "
-        "bimester = 4 ORDER BY date",{'id':grade_subject})
-    events = QueriedData.return_rows(events)
-    print(events)
-    for y in students:
-        s_events = {}
-        for x in events:
-            event_ = {}
-            event_['event_id'] = x[0] 
-            event_['grade'] = ''
-            s_events[x[1]] = event_
-        y['events'] = s_events
+    # events = db.session.execute("SELECT event_id,name FROM class_events WHERE grade_subject_id =2 AND "
+    #     "bimester = 4 ORDER BY date",{'id':grade_subject})
+    # events = QueriedData.return_rows(events)
+    # print(events)
+    # for y in students:
+    #     s_events = {}
+    #     for x in events:
+    #         event_ = {}
+    #         event_['event_id'] = x[0] 
+    #         event_['grade'] = ''
+    #         s_events[x[1]] = event_
+    #     y['events'] = s_events
 
-    grades = db.session.execute("SELECT g.child_id, e.event_id, g.grade FROM grades as g JOIN class_events "
-        "as e ON g.event_id = e.event_id WHERE grade_subject_id = :id",{'id':grade_subject})
-    grades = QueriedData.return_rows(grades) 
+    # grades = db.session.execute("SELECT g.child_id, e.event_id, g.grade FROM grades as g JOIN class_events "
+    #     "as e ON g.event_id = e.event_id WHERE grade_subject_id = :id",{'id':grade_subject})
+    # grades = QueriedData.return_rows(grades) 
 
-    for y in students:
-        for x in grades:
-            if y['id'] == x[0]:
-                for z in y['events'].values():
-                    if z['event_id'] == x[1]:
-                        z['grade'] = x[2]  
+    # for y in students:
+    #     for x in grades:
+    #         if y['id'] == x[0]:
+    #             for z in y['events'].values():
+    #                 if z['event_id'] == x[1]:
+    #                     z['grade'] = x[2]  
             
 
-    print(students)
+    # print(students)
 
-    return render_template('teachers/grades.html',grades = students, group = class_data[1], classs = class_data[2],
-        events = events)
+    return render_template('teachers/grades.html', group = class_data[1], classs = class_data[2], 
+        grade_subject = grade_subject)
 
 
 @teachers.route('/classes/<int:grade_subject>/events')
