@@ -24,8 +24,8 @@ class Events(db.Model):
     posted_on = db.Column(db.DateTime,default = datetime.utcnow)
 
     @classmethod
-    def grades_by_group(cls,subject):
-        return cls.query.filter(cls.grade_subject_id == subject).all()
+    def get_class_event(cls,event):
+        return cls.query.filter(cls.event_id == event).first()
 
 
 

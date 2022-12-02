@@ -8,7 +8,7 @@ from .teachers.views import teachers
 from .parents.views import parents
 from .api.views import api
 from .database import db
-from .api.views import GroupGrades
+from .api.views import GroupGrades, Event
 
 
 login_manager = LoginManager()
@@ -30,6 +30,8 @@ def create_app():
     login_manager.init_app(app)
     app_api = Api(api)
     app_api.add_resource(GroupGrades,'/grades/<int:subject>')
+    app_api.add_resource(Event,'/events/<int:event>')
+
     app.register_blueprint(api) 
 
 

@@ -13,7 +13,7 @@ api = Blueprint('api',__name__, url_prefix='/api',template_folder='templates')
 #grades_schema = EventsSchema(many=True, only=('name','grades'))
 grades_schema = ChildrenSchema(many=True, exclude=('email','active'))
 #grades_schema.grades.dump_only ('event',#)
-grades_schema.im = 'helloween'
+event_schema = EventsSchema()
 
 class GroupGrades(Resource):
     def get(self,subject):
@@ -22,3 +22,11 @@ class GroupGrades(Resource):
         grades = Children.grades_by_group(subject) 
         
         return grades_schema.dump(grades),HTTPStatus.OK
+
+
+class Event(Resource):
+    def get(self,event):
+
+        event_details = Events.get_class_event(event)  
+        return event_schema.dump(event_details)
+

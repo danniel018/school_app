@@ -8,8 +8,8 @@
 
     <div class="row justify-content-center">
         <div class="col-3"> 
-            <h1 class="title">{{group}} {{classs}}</h1>
-            <h3 class="title">{{event[1]}}</h3>
+            <h1 class="title">{{group}} {{classs}}</h1> <p hidden>{{grade_subject}}</p> <p id="event" hidden>{{event}}</p>
+            <h3 class="title"> </h3>
         </div>
     </div>
 
@@ -18,11 +18,7 @@
             <div class="card text-white bg-success mb-3" style="max-width: 24rem; background-color: rgb(32, 135, 151)  !important;">
                 <div class="card-header"><h4>Event details</h3></div>
                 <div class="card-body">
-                    <div><h6 class="text">type:</h6> <p class="text">{{event[0]}}</p></div>
-                    <div><h6 class="text">name:</h6> <p class="text">{{event[1]}}</p></div>
-                    <div><h6 class="text">Description:</h6> <p class="text">{{event[2]}}</p></div>
-                    <div><h6 class="text">Submit date:</h6> <p class="text">{{event[3]}}</p></div>
-                    <div><h6 class="text">Posted on:</h6> <p class="text">{{event[4]}}</p></div>
+                    
                 </div>
                 <div class="card-footer">
                     <a href="#" style="color:aliceblue">Edit event</a>
@@ -47,14 +43,7 @@
                 </thead>
 
                 <tbody>
-                    {% for x in students  %}
-                        <tr>
-                            {% for y in x.values()  %}
-                                <td>{{y}}</td> 
-                            {% endfor %}
-                            <td><a href="#">Set/Update Grade</a></td>
-                        </tr>
-                    {% endfor %}
+                   
                 
                 </tbody>
             </table>
@@ -62,5 +51,10 @@
         </div>
             
     </div>
+    <script src="{{url_for('static',filename='js/class_event.js')}}"></script>
+  <script>
+    window.onload = load_event()
+  </script>
+
 
 {% endblock content %}

@@ -13,6 +13,23 @@ class GradesSchema(Schema):
     grade = fields.Float(required = True)
     remarks = fields.String(required=True,validate=validate.Length(max=200))
 
+    @staticmethod
+    def sort_parameter(dic):
+
+        return dic['child']['lastname']
+
+    # @post_dump
+    # def sort_students(self,data,many):
+    #     if many:
+    #         # order= []
+            
+    #         # order.append(dict(data))
+             
+    #         print(type(data))
+    #         order.sort(key=GradesSchema.sort_parameter)
+    #         print(order)
+    #         return order
+
 
 class EventsSchema(Schema):
     class Meta:
@@ -27,6 +44,20 @@ class EventsSchema(Schema):
     bimester = fields.Integer(required = True)
     grades = fields.Nested(lambda : GradesSchema(many=True),dump_only = True,
         only=('child','grade'))
+    posted_on = fields.DateTime(dump_only = True) 
+
+    @staticmethod
+    def sort_parameter(dic):
+
+        return dic['child']['lastname']
+
+    @post_dump
+    def sort_students(self,data,many):
+        
+        data['grades'].sort(key = EventsSchema.sort_parameter)
+
+        return data
+
     
 class ChildrenSchema(Schema):
     class Meta:
