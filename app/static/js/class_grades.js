@@ -5,7 +5,7 @@ function load_grades(){
 }
 
 async function set_table(subject){
-    const res = await fetch('/api/grades/' + subject)
+    const res = await fetch('/api/grades/gradesubject/' + subject)
     const data_response = await res.json()
 
     if (res.status !== 200){

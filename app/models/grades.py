@@ -44,6 +44,14 @@ class Grades(db.Model):
         return cls.query.join(Events, cls.event_id == Events.event_id)\
             .filter(Events.grade_subject_id == subject).all()
 
+    @classmethod
+    def get_by_id(cls,grade):
+        return cls.query.filter(cls.grade_id == grade).first()
+    
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
 
 class Children(db.Model):
     __tablename__ = 'children'

@@ -37,7 +37,7 @@
                         <th scope="col">Lastname</th>
                         <th scope="col">Name</th>
                         <th scope="col">Grade</th>
-                        <th scope="col"></th>
+                        
                         
                     </tr>
                 </thead>
@@ -51,6 +51,32 @@
         </div>
             
     </div>
+
+    <div class="modal fade" id="grademodal" tabindex="-1" aria-labelledby="grademodalabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="grademodalabel">Set/Update Grade</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="set_grade()">
+                    <h3 id="student_name" class="title"></h3>
+                    <div class="mb-3">
+                        <label for="grade" class="form-label">Grade</label>
+                        <input type="number" class="form-control" id="grade" aria-describedby="emailHelp" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <textarea name="remarks" class="form-control" id="remarks" rows="3"></textarea>
+                    </div>  
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="save" >Save changes</button>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
     <script src="{{url_for('static',filename='js/class_event.js')}}"></script>
   <script>
     window.onload = load_event()

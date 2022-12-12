@@ -8,10 +8,12 @@ class GradesSchema(Schema):
     grade_id = fields.Int(dump_only = True)
     event = fields.Nested(lambda: EventsSchema(), dump_only = True,
         only=('name',)) 
+    #event_id = fields.Int(required = True)
+    child_id = fields.Int(dump_only = True)
     child = fields.Nested(lambda : ChildrenSchema(),dump_only = True,
         only=('child_id','name','lastname'))
     grade = fields.Float(required = True)
-    remarks = fields.String(required=True,validate=validate.Length(max=200))
+    remarks = fields.String(required=False,validate=validate.Length(max=200))
 
     @staticmethod
     def sort_parameter(dic):
@@ -43,7 +45,7 @@ class EventsSchema(Schema):
     date = fields.Date(required=True)
     bimester = fields.Integer(required = True)
     grades = fields.Nested(lambda : GradesSchema(many=True),dump_only = True,
-        only=('child','grade'))
+        only=('child','grade','grade_id'))
     posted_on = fields.DateTime(dump_only = True) 
 
     @staticmethod

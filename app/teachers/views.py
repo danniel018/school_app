@@ -136,29 +136,6 @@ def event(grade_subject,event):
     if class_data[0] != current_user.id:
         abort(403)
 
-    class_event = db.session.execute("SELECT event_type,name,description,date,posted_on FROM "
-        "class_events WHERE event_id=:id",{'id':event})
-    class_event = QueriedData.return_row(class_event) 
-
-    students = db.session.execute("SELECT c.child_id, c.lastname,c.name,'' FROM children as c JOIN children_grade_groups as "
-        "cg ON c.child_id = cg.child_id JOIN grade_groups as gg ON cg.grade_group_id = gg.grade_group_id "
-        "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  "
-        "WHERE gs.grade_subject_id = :id ORDER BY lastname",{'id':grade_subject}) 
-    students = QueriedData.return_dic(students,'id','lastname','name','grade')
-
-    grades = db.session.execute("SELECT child_id,grade FROM grades WHERE event_id = :event",{'event':event}) 
-    grades = QueriedData.return_rows(grades)
-
-    print(len(grades))
-
-    for x in students:
-        for y in grades:
-            if x['id'] == y[0]:
-                # if len(grades) <
-                x['grade'] = y[1]
-                break
-            
     
-    print(students)
     return render_template('teachers/event.html', group = class_data[1], classs = class_data[2],
-        grade_subject = grade_subject, event = event, students = students)
+        grade_subject = grade_subject, event = event)
