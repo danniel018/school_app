@@ -15,10 +15,10 @@ class GradesSchema(Schema):
     grade = fields.Float(required = True)
     remarks = fields.String(required=False,validate=validate.Length(max=200))
 
-    @staticmethod
-    def sort_parameter(dic):
+    # @staticmethod
+    # def sort_parameter(dic):
 
-        return dic['child']['lastname']
+    #     return dic['child']['lastname']
 
     # @post_dump
     # def sort_students(self,data,many):
@@ -53,8 +53,8 @@ class EventsSchema(Schema):
 
         return dic['child']['lastname']
 
-    @post_dump
-    def sort_students(self,data,many):
+    #@post_dump
+    def sort_students(self,data):
         
         data['grades'].sort(key = EventsSchema.sort_parameter)
 
@@ -72,7 +72,5 @@ class ChildrenSchema(Schema):
     active = fields.String(required=True,
         validate=validate.OneOf(('yes','no')))   
     grades = fields.Nested(lambda : GradesSchema(many=True, only=('event','grade')),dump_only = True) 
-    #grades.   
-
-    im = 'hjhg'    
+    
    

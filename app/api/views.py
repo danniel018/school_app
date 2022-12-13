@@ -16,7 +16,7 @@ api = Blueprint('api',__name__, url_prefix='/api',template_folder='templates')
 grades_schema = ChildrenSchema(many=True, exclude=('email','active'))
 #grades_schema.grades.dump_only ('event',#)
 event_schema = EventsSchema()
-grades_schema = GradesSchema()
+grade_schema = GradesSchema()
 class GroupGrades(Resource):
     def get(self,subject_id):
 
@@ -30,7 +30,8 @@ class Event(Resource):
     def get(self,event_id):
 
         event_details = Events.get_class_event(event_id)  
-        return event_schema.dump(event_details)
+        event = event_schema.dump(event_details)
+        return event_schema.sort_students(event)
 
     
         
@@ -44,7 +45,7 @@ class Grade(Resource):
         print(grade_data)
 
         try:
-            grade = grades_schema.load(data=grade_data)
+            grade = grade_schema.load(data=grade_data)
 
         except ValidationError as e:
             print(e)
