@@ -29,10 +29,29 @@ class GroupGrades(Resource):
 class Event(Resource):
     def get(self,event_id):
 
-        event_details = Events.get_class_event(event_id)  
+        event_details = Events.get_by_id(event_id)  
         event = event_schema.dump(event_details)
         return event_schema.sort_students(event)
 
+    def patch(self,event_id):
+        data = request.get_json()
+        try:
+            event = event_schema.load(data = data)
+
+        except ValidationError as e:
+            print(e)
+            return e.messages,HTTPStatus.BAD_REQUEST
+
+        update_event = Events.get_by_id(event_id) 
+        update_event.event_type = event.get('event_type') or update_event.event_type
+        update_event.name = event.get('name') or update_event.name
+        update_event.description = event.get('description') or update_event.description
+        update_event.submit_date = event.get('date') or update_event.submit_date
+
+        update_event.save()
+
+        flash('Event updated successfully!',category='success')
+        return  HTTPStatus.OK
     
         
         # event_details = Events.get_class_event(event)  

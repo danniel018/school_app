@@ -41,9 +41,9 @@ class EventsSchema(Schema):
     event_type = fields.String(required=True,
         validate=validate.OneOf(('assignment','exam','laboratory','other')))
     name = fields.String(required=True,validate=validate.Length(max=50))
-    description = fields.String(required=True,validate=validate.Length(max=100))
+    description = fields.String(validate=validate.Length(max=100))
     date = fields.Date(required=True)
-    bimester = fields.Integer(required = True)
+    bimester = fields.Integer(dump_only = True)
     grades = fields.Nested(lambda : GradesSchema(many=True),dump_only = True,
         only=('child','grade','grade_id'))
     posted_on = fields.DateTime(dump_only = True) 

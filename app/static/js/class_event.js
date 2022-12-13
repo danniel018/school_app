@@ -34,7 +34,7 @@ async function set_data(event_id){
             grade_btn.className = 'btn btn-outline-light btn-sm'
             grade_btn.setAttribute('data-bs-toggle','modal')
             grade_btn.setAttribute('data-bs-target','#grademodal')
-            grade_btn.innerHTML = student.grade
+            grade_btn.innerHTML = student.grade || 'set'
             grade_btn.addEventListener('click',function (){
                 modal_data(student,data_response.event_id);
             },false)
@@ -49,7 +49,10 @@ async function set_data(event_id){
             body.appendChild(tr)
             row ++
         })
-
+        let edit_event_btn = document.getElementById('edit_event')
+        edit_event_btn.addEventListener('click',function(){
+            edit_event(data_response)
+        },false)
 
     }
 }
@@ -57,7 +60,7 @@ async function set_data(event_id){
 function modal_data(student_data,event){
     let student = document.getElementById("student_name")
     let grade = document.getElementById("grade")
-    let save_btn = document.getElementById("save")
+    let save_btn = document.getElementById("save_grade")
     save_btn.addEventListener('click', function () {
         set_grade(student_data,event);
     },false)
@@ -97,6 +100,56 @@ async function set_grade(student_data,event){
         }
 
     }
-        
+}
+
+function edit_event(event){
+    let event_type = document.getElementById('type').value = event.event_type
+    let name = document.getElementById('name')
+    name.value = event.name
+    let description = document.getElementById('description').value = event.description
+    let submit_date = document.getElementById('submit_date')
+    submit_date.value = event.date
+
+    let save =  document.getElementById('save_event')
+    save.addEventListener('click',function(){
+        save_event_changes([name,submit_date],event)
+    },false)
     
 }
+
+async function save_event_changes(form_values,event){
+
+    let validated = true
+    for(let form_value of form_values){
+        if (form_value.value.trim()=== '' || form_value.value.trim() == null){
+            form_value.style.borderColor = 'red'  
+            validated = false
+        } 
+    }
+    if (validated){
+        let event_type = document.getElementById('type').value
+        let description = document.getElementById('description').value
+        let data = {}
+        data.event_type = event_type
+        data.name = form_values[0].value
+        data.description = description
+        data.date = form_values[1].value
+        const res = await fetch('/api/events/' + event.event_id,{
+            method: 'PATCH',
+            headers: {
+                'Content-Type':'application/json' 
+            },
+            body: JSON.stringify(data)       
+        })
+        const data_response = await res.json()
+        if (res.status !== 200){
+            alert(data_response.message)
+        }
+        
+        else{
+            location.reload()
+        }
+    }
+}
+        
+    

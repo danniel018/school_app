@@ -24,10 +24,13 @@ class Events(db.Model):
     posted_on = db.Column(db.DateTime,default = datetime.utcnow)
 
     @classmethod
-    def get_class_event(cls,event):
+    def get_by_id(cls,event):
         return cls.query.filter(cls.event_id == event).first()
 
-
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+    
 
 class Grades(db.Model):
     __tablename__ = 'grades'

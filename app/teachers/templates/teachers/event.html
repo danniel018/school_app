@@ -21,7 +21,7 @@
                     
                 </div>
                 <div class="card-footer">
-                    <a href="#" style="color:aliceblue">Edit event</a>
+                    <a href="#" id="edit_event" data-bs-toggle="modal" data-bs-target="#eventmodal" style="color:aliceblue">Edit event</a>
                 </div>
               </div>
         </div>
@@ -60,7 +60,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form onsubmit="set_grade()">
+                <form>
                     <h3 id="student_name" class="title"></h3>
                     <div class="mb-3">
                         <label for="grade" class="form-label">Grade</label>
@@ -71,12 +71,50 @@
                         <textarea name="remarks" class="form-control" id="remarks" rows="3"></textarea>
                     </div>  
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" id="save" >Save changes</button>
+                    <button type="button" class="btn btn-success" id="save_grade" >Save changes</button>
                 </form>
             </div>
           </div>
         </div>
-      </div>
+    </div>
+
+    <div class="modal fade" id="eventmodal" tabindex="-1" aria-labelledby="eventmodalabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="eventmodalabel">Event Details</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Type</label>
+                        <select type="text" class="form-select" id="type">
+                            <option value="assignment">Assignment</option>
+                            <option value="exam">Exam</option>
+                            <option value="laboratory">Laboratory</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" max="50">
+                    </div>
+                    <div class="mb-3">
+                        <label for="Description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="description" max="100">
+                    </div>
+                    <div class="mb-3">
+                        <label for="submit_date" class="form-label">submit date</label>
+                        <input type="date" class="form-control" id="submit_date" >
+                    </div>  
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="save_event" >Save changes</button>
+                </form>
+            </div>
+          </div>
+        </div>
+    </div>
     <script src="{{url_for('static',filename='js/class_event.js')}}"></script>
   <script>
     window.onload = load_event()
