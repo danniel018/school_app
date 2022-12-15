@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{super()}} | Announcements
+{% endblock title %}
+
+{% block content %}
+    <h1 class="title">Announcements and summons <i class="bi bi-file-text"></i></h1>
+
+    <div class="row mt-5">
+        <div class="col-8">
+            <div class="card text-dark bg-light mb-3" style="max-width: 100%; height:100%"> 
+                <div class="card-header"> <h5 class="title">Issue New</h5> </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">reason</label>
+                            <select  class="form-select" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                <option value="">announcement</option>
+                                <option value="">summons</option>
+                            </select>
+                        </div>
+                        <label class="form-check-label" for="announcement_radios"> is address to </label>
+                        <fieldset class="announcement_radios" id="announcement_radios">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="radio1" id="radio_1" checked>
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                  all my students' parents
+                                </label>
+                            </div>
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="radio" name="radio1" id="radio_2" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                  Select class
+                                </label>
+                            </div>
+                            
+                            <fieldset id="fieldset2" disabled hidden>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mt-3">
+                                            <label for="class_select" class="form-label">class</label>
+                                            <select  class="form-select" id="class_select" >
+                                                <option value="">7A Maths</option>
+                                                <option value="">5B Technology</option>
+                                            </select>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label for="parents_select" class="form-label">Parent</label>
+                                            <select  class="form-select" id="parents_select" >
+                                                <option value="1">All parents in this class</option>
+                                                <option value="2">specific student's parents</option>
+                                            </select>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label for="student_select" class="form-label">Student</label>
+                                            <select  class="form-select" id="student_select" disabled>
+                                                <option >Select student</option>   
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                           
+                            
+                        </fieldset>
+                        
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                            <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form> 
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="announcement">
+                <div class="announcement2">
+                    <h5 class="title">Last bimester announcements</h5>                    
+                </div>
+            </div>
+                
+
+        </div>
+    </div>
+    <div class="row">
+
+    </div>
+    <script src="{{url_for('static',filename='js/announcements.js')}}"></script>
+{% endblock content%}

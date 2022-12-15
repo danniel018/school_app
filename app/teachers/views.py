@@ -139,3 +139,12 @@ def event(grade_subject,event):
     
     return render_template('teachers/event.html', group = class_data[1], classs = class_data[2],
         grade_subject = grade_subject, event = event)
+
+
+@teachers.route('/announcements')
+def announcements():
+    
+    
+
+    
+    return render_template('teachers/announcements.html')
