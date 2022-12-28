@@ -1,12 +1,20 @@
-let radio2 = document.getElementById("radio_2")
-radio2.addEventListener('click',function(){
-    radio_form(1)
-},false)
 
-let radio1 = document.getElementById("radio_1")
-radio1.addEventListener('click',function(){
-    radio_form(0)
-},false)
+async function load_info(){
+    let teacher = parseInt (document.getElementById('teacher').innerHTML)
+    
+    const res = await fetch('/api/gradessubjects/' + teacher)
+
+    let radio2 = document.getElementById("radio_2")
+    radio2.addEventListener('click',function(){
+        radio_form(1)
+    },false)
+    let radio1 = document.getElementById("radio_1")
+    radio1.addEventListener('click',function(){
+        radio_form(0)
+    },false)
+}
+
+
 
 function radio_form(show){
     let form = document.getElementById("fieldset2")

@@ -2,12 +2,8 @@ from flask import Blueprint, request,flash
 from flask_restful import Resource
 from http import HTTPStatus
 from marshmallow import ValidationError
-from app.schemas.grades import GradesSchema
-from app.schemas.grades import EventsSchema
-from app.schemas.grades import ChildrenSchema
-from app.models.grades import Grades
-from app.models.grades import Events
-from app.models.grades import Children
+from app.schemas.grades import GradesSchema,EventsSchema,ChildrenSchema,GradesSubjectsSchema
+from app.models.grades import Grades, Events,Children,GradesSubjects
 from app.database import db
 
 
@@ -17,6 +13,7 @@ grades_schema = ChildrenSchema(many=True, exclude=('email','active'))
 #grades_schema.grades.dump_only ('event',#)
 event_schema = EventsSchema()
 grade_schema = GradesSchema()
+grades_subject_schemas = GradesSubjectsSchema(many=True)
 class GroupGrades(Resource):
     def get(self,subject_id):
 
@@ -79,3 +76,11 @@ class Grade(Resource):
         flash('Grade updated successfully!',category='success')
         return  HTTPStatus.OK
        
+
+class Teacherclasses(Resource):
+    def get(self,teacher_id):
+
+        #grades = Events.grades_by_group(subject_id)
+        subjects = GradesSubjects.subjects_by_teacher(teacher_id)  
+        
+        return grades_subject_schemas.dump(subjects),HTTPStatus.OK

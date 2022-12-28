@@ -1,11 +1,11 @@
 *{
-    box-sizing: border-box;
+    box-sizing: border-box; 
     margin: 0;
     padding: 0;
  }
  .feather {
      width: 16px;
-     height: 16px;
+     height: 16px; 
    }
  #sidebarMenu{
      overflow-y: scroll;

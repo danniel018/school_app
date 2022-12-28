@@ -74,3 +74,47 @@ class ChildrenSchema(Schema):
     grades = fields.Nested(lambda : GradesSchema(many=True, only=('event','grade')),dump_only = True) 
     
    
+class GradesSubjectsSchema(Schema):
+    class Meta:
+        ordered = True
+    
+    grade_subject_id = fields.Int(dump_only = True)
+    grade_group = fields.Nested(lambda: GradeGroupsSchema( only=('grade_group_id','name',)), dump_only = True) 
+    subject = fields.Nested(lambda: SubjectsSchema( only=('name',)), dump_only = True) 
+    teacher = fields.Nested(lambda: UsersSchema( only=('name','lastname')), dump_only = True)
+    classroom = fields.String(dump_only = True)
+
+
+class GradeGroupsSchema(Schema):
+    class Meta:
+        ordered = True
+    
+    grade_group_id = fields.Int(dump_only = True)
+    name = fields.String(required=True,validate=validate.Length(max=3))
+    director_id = fields.Int(dump_only = True)
+    year = fields.Integer(dump_only = True)
+    subject_id = fields.Int(dump_only = True)
+    classroom = fields.String(dump_only = True)
+    subjects = fields.Nested(lambda: GradesSubjectsSchema, dump_only = True)
+
+
+class SubjectsSchema(Schema):
+    class Meta:
+        ordered = True
+    
+    subject_id = fields.Int(dump_only = True)
+    name = fields.String(required=True,validate=validate.Length(max=35))
+    classes = fields.Nested(lambda: GradesSubjectsSchema(only=('grade_group',)), dump_only = True)
+
+class UsersSchema(Schema):
+    class Meta:
+        ordered = True
+    
+    user_id = fields.Int(dump_only = True)
+    name = fields.String(required=True,validate=validate.Length(max=20))
+    lastname = fields.String(required=True,validate=validate.Length(max=20))
+    email = fields.String(required=True,validate=validate.Length(max=50))
+    user_type = fields.String(required=True,
+        validate=validate.OneOf(('teacher','parent','student'))) 
+    classes = fields.Nested(lambda: GradesSubjectsSchema(only=('grade_group',))
+        ,dump_only = True)

@@ -79,7 +79,8 @@ class GradeGroups(db.Model):
     name = db.Column(db.String(3),nullable = False)
     director_id = db.Column(INTEGER(unsigned=True)) # Update foreign key
     year = db.Column(YEAR,nullable = False)
-    classrom = db.Column(db.String(5), nullable = True)
+    classroom = db.Column(db.String(5), nullable = True)
+    subjects = db.relationship('GradesSubjects',back_populates = 'grade_group')
     #children = db.relationship('Children',secondary=children_grade_groups, back_populates = 'groups')
 
 
@@ -87,13 +88,39 @@ class GradesSubjects(db.Model):
     __tablename__ = 'grades_subjects'
     grade_subject_id = db.Column(INTEGER(unsigned=True),primary_key = True)
     grade_group_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('grade_groups.grade_group_id'))
-    subject_id = db.Column(INTEGER(unsigned=True)) # Update foreign key
-    teacher_id = db.Column(INTEGER(unsigned=True)) # Update foreign key
-    classrom = db.Column(db.String(5), nullable = True) 
+    grade_group = db.relationship('GradeGroups',back_populates = 'subjects')
+    subject_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('subjects.subject_id')) # Update foreign key
+    subject = db.relationship('Subjects',back_populates = 'classes')
+    teacher_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('users.user_id')) # Update foreign key
+    teacher = db.relationship('Users',back_populates = 'classes')
+    classroom = db.Column(db.String(5), nullable = True) 
+
+    @classmethod
+    def subjects_by_teacher(cls,teacher):
+        x=  cls.query.filter(cls.teacher_id == teacher).all()
+        print(x)
+        return x
 
 class childrenGradesGroups(db.Model):
     __tablename__ = 'children_grade_groups'
     id = db.Column(INTEGER(unsigned=True),primary_key = True)
     child_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('children.child_id'))
     grade_group_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('grade_groups.grade_group_id'))
+    
+class Users(db.Model):
+    __tablename__ = 'users'
+    user_id = db.Column(INTEGER(unsigned=True),primary_key = True)
+    name = db.Column(db.String(20),nullable = False)
+    lastname = db.Column(db.String(20),nullable = False)
+    email = db.Column(db.String(50),nullable = False, unique = True)
+    password = db.Column(db.String(256),nullable = False)
+    user_type = db.Column(ENUM('teacher','parent','student'))
+    classes = db.relationship('GradesSubjects',back_populates = 'teacher')
+    
+
+class Subjects(db.Model):
+    __tablename__ = 'subjects'
+    subject_id = db.Column(INTEGER(unsigned=True),primary_key = True)
+    name = db.Column(db.String(35),nullable = False)
+    classes = db.relationship('GradesSubjects',back_populates = 'subject')
     
