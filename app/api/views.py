@@ -1,10 +1,16 @@
-from flask import Blueprint, request,flash
+from flask import Blueprint, request,flash, redirect, url_for, jsonify
 from flask_restful import Resource
+from flask_login import current_user
 from http import HTTPStatus
 from marshmallow import ValidationError
-from app.schemas.grades import GradesSchema,EventsSchema,ChildrenSchema,GradesSubjectsSchema
-from app.models.grades import Grades, Events,Children,GradesSubjects
+from datetime import date
+from json import JSONEncoder
+from app.schemas.grades import GradesSchema,EventsSchema,\
+    ChildrenSchema,GradesSubjectsSchema, AnnouncementsSchema
+from app.models.grades import Grades, Events,Children,GradesSubjects,\
+    Announcements
 from app.database import db
+from ..teachers.views import teachers
 
 
 api = Blueprint('api',__name__, url_prefix='/api',template_folder='templates')
@@ -14,11 +20,20 @@ grades_schema = ChildrenSchema(many=True, exclude=('email','active'))
 event_schema = EventsSchema()
 grade_schema = GradesSchema()
 grades_subject_schemas = GradesSubjectsSchema(many=True)
+announcements_schema = AnnouncementsSchema()
 class GroupGrades(Resource):
     def get(self,subject_id):
 
         #grades = Events.grades_by_group(subject_id)
         grades = Children.grades_by_group(subject_id) 
+        
+        return grades_schema.dump(grades),HTTPStatus.OK
+
+class ClassChildren(Resource):
+    def get(self,subject_id):
+
+        #grades = Events.grades_by_group(subject_id)
+        grades = Children.by_class(subject_id) 
         
         return grades_schema.dump(grades),HTTPStatus.OK
 
@@ -84,3 +99,45 @@ class Teacherclasses(Resource):
         subjects = GradesSubjects.subjects_by_teacher(teacher_id)  
         
         return grades_subject_schemas.dump(subjects),HTTPStatus.OK
+
+
+class Announcements(Resource):
+    def post(self): 
+        data = request.form.get('radio1')
+        print(data)
+        print('hello madafaka')
+        announcement_date = date.today()
+        if int(data) == 1:
+            parents = request.form.get('parents_select')
+            if parents == 0:
+                "logic"
+            else:
+                student = request.form.get('student_select')
+        else:
+            announcement = {}
+            announcement['date'] = announcement_date
+            announcement['teacher_id'] = current_user.id
+            announcement['filelink'] = 'www.skdfhksjdhfk.com'
+            announcement = JSONEncoder(announcement)
+
+            try:
+                new_announcement = announcements_schema.load(data=announcement)
+            except ValidationError as e:
+                print(e.messages)
+                return e.messages,HTTPStatus.BAD_REQUEST
+            
+            try: ##### try this insert random children in missing group
+                new = Announcements(**new_announcement)
+                subjects = GradesSubjects.subjects_by_teacher(current_user.id)  
+                new.grade_groups = [x for x in subjects]
+                db.session.add(new)
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                db.session.rollback()
+
+
+            
+
+        return redirect(url_for('teachers.announcements'))
+        

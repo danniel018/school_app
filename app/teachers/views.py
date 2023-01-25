@@ -23,7 +23,7 @@ def teacher_classes():
     classes = db.session.execute("SELECT gp.name,s.name,gp.grade_group_id,gs.grade_subject_id FROM "
         "grade_groups as gp JOIN grades_subjects as gs "
         "ON gp.grade_group_id = gs.grade_group_id JOIN subjects as s ON s.subject_id = gs "
-        ".subject_id WHERE gs.teacher_id = :id AND gp.year = :year",{'id':current_user.id,'year':y.year})
+        ".subject_id WHERE gs.teacher_id = :id AND gp.year = :year",{'id':current_user.id,'year':year})
 
     return render_template('teachers/classes.html',classes=QueriedData.return_rows(classes))
 

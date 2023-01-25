@@ -2,12 +2,15 @@ from app.database import db
 from sqlalchemy.dialects.mysql import INTEGER, ENUM, TINYINT, YEAR
 from datetime import datetime
  
-# children_grade_groups = db.Table('children_grade_groups',
-#     db.Column('id',INTEGER(unsigned=True),primary_key = True),
-#     db.Column('child_id',INTEGER(unsigned=True),
-#         db.ForeignKey('children.child_id') ,nullable = False),
-#     db.Column('grade_group_id',INTEGER(unsigned=True),
-#         db.ForeignKey('grade_groups.grade_group_id') ,nullable = False))
+announcements_children = db.Table('announcements_children',
+    db.Column('id',INTEGER(unsigned=True),primary_key = True),
+    db.Column('announcement_id',INTEGER(unsigned=True),
+        db.ForeignKey('announcements.announcement_id') ,nullable = False),
+    db.Column('grade_group_id',INTEGER(unsigned=True),
+        db.ForeignKey('grade_groups.grade_group_id') ,nullable = False),
+    db.Column('child_id',INTEGER(unsigned=True),
+        db.ForeignKey('children.child_id') ,nullable = False))
+    
 
 
 class Events(db.Model):
@@ -64,12 +67,21 @@ class Children(db.Model):
     email = db.Column(db.String(20),nullable = True)
     active = db.Column(ENUM('yes','no'),default = 'yes')
     grades = db.relationship('Grades',back_populates = 'child')
+    announcements = db.relationship('announcements',
+        secondary=announcements_children, back_populates = 'children')
     #groups = db.relationship('GradeGroups',secondary=children_grade_groups, back_populates = 'children')
     
     @classmethod
     def grades_by_group(cls,subject):
         return cls.query.join(childrenGradesGroups).join(GradeGroups)\
             .join(GradesSubjects).filter(GradesSubjects.grade_subject_id == subject)\
+            .order_by(cls.lastname).all()
+
+    @classmethod
+    def by_class(cls,grade_subject_id):
+        return db.session.query(cls.child_id,cls.name,cls.lastname)\
+            .join(childrenGradesGroups).join(GradeGroups)\
+            .join(GradesSubjects).filter(GradesSubjects.grade_subject_id == grade_subject_id)\
             .order_by(cls.lastname).all()
 
 
@@ -82,7 +94,9 @@ class GradeGroups(db.Model):
     classroom = db.Column(db.String(5), nullable = True)
     subjects = db.relationship('GradesSubjects',back_populates = 'grade_group')
     #children = db.relationship('Children',secondary=children_grade_groups, back_populates = 'groups')
-
+    announcements = db.relationship('announcements',
+        secondary=announcements_children, back_populates = 'grade_groups')
+    
 
 class GradesSubjects(db.Model):
     __tablename__ = 'grades_subjects'
@@ -97,9 +111,8 @@ class GradesSubjects(db.Model):
 
     @classmethod
     def subjects_by_teacher(cls,teacher):
-        x=  cls.query.filter(cls.teacher_id == teacher).all()
-        print(x)
-        return x
+        return cls.query.filter(cls.teacher_id == teacher).all()
+        
 
 class childrenGradesGroups(db.Model):
     __tablename__ = 'children_grade_groups'
@@ -116,11 +129,25 @@ class Users(db.Model):
     password = db.Column(db.String(256),nullable = False)
     user_type = db.Column(ENUM('teacher','parent','student'))
     classes = db.relationship('GradesSubjects',back_populates = 'teacher')
-    
+    announcements = db.relationship('Announcements',back_populates = 'teacher')
 
 class Subjects(db.Model):
     __tablename__ = 'subjects'
     subject_id = db.Column(INTEGER(unsigned=True),primary_key = True)
     name = db.Column(db.String(35),nullable = False)
     classes = db.relationship('GradesSubjects',back_populates = 'subject')
+
+
+class Announcements(db.Model):
+    __tablename__ = 'announcements'
+    announcement_id = db.Column(INTEGER(unsigned=True),primary_key = True)
+    date = db.Column(db.Date,nullable = False)
+    teacher_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('users.user_id'),nullable=False)
+    teacher = db.relationship('Users',back_populates = 'announcements')
+    filelink = db.Column(db.String(256),nullable = True)
+    grade_groups = db.relationship('announcements_children',
+        secondary=announcements_children, back_populates = 'announcements')
+    children = db.relationship('children',
+        secondary=announcements_children, back_populates = 'announcements')
+
     

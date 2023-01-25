@@ -10,7 +10,7 @@ async function set_data(event_id){
 
     if (res.status !== 200){
         console.log(res.status + data_response.message)
-      }
+    }
     
     else{
         let task = document.querySelector('h3')
