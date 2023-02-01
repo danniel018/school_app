@@ -5,6 +5,8 @@ from http import HTTPStatus
 from marshmallow import ValidationError
 from datetime import date
 from json import JSONEncoder
+from webargs import fields 
+from webargs.flaskparser import use_kwargs
 from app.schemas.grades import GradesSchema,EventsSchema,\
     ChildrenSchema,GradesSubjectsSchema, AnnouncementsSchema
 from app.models.grades import Grades, Events,Children,GradesSubjects,\
@@ -103,41 +105,42 @@ class Teacherclasses(Resource):
 
 class Announcements(Resource):
     def post(self): 
-        data = request.form.get('radio1')
-        print(data)
-        print('hello madafaka')
-        announcement_date = date.today()
-        if int(data) == 1:
-            parents = request.form.get('parents_select')
-            if parents == 0:
-                "logic"
-            else:
-                student = request.form.get('student_select')
-        else:
-            announcement = {}
-            announcement['date'] = announcement_date
-            announcement['teacher_id'] = current_user.id
-            announcement['filelink'] = 'www.skdfhksjdhfk.com'
-            announcement = JSONEncoder(announcement)
+        data = request.files.get('file')
+        team = request.form.get('Manchester')
 
-            try:
-                new_announcement = announcements_schema.load(data=announcement)
-            except ValidationError as e:
-                print(e.messages)
-                return e.messages,HTTPStatus.BAD_REQUEST
+        print(data.filename, team)
+        # data = request.form.get('radio1')
+        # print(data)
+        # print('hello madafaka')
+        # announcement_date = date.today()
+        # if int(data) == 1:
+        #     parents = request.form.get('parents_select')
+        #     if parents == 0:
+        #         "logic"
+        #     else:
+        #         student = request.form.get('student_select')
+        # else:
+        #     announcement = {}
+        #     announcement['date'] = announcement_date
+        #     announcement['teacher_id'] = current_user.id
+        #     announcement['filelink'] = 'www.skdfhksjdhfk.com'
+        #     announcement = JSONEncoder(announcement)
+
+        #     try:
+        #         new_announcement = announcements_schema.load(data=announcement)
+        #     except ValidationError as e:
+        #         print(e.messages)
+        #         return e.messages,HTTPStatus.BAD_REQUEST
             
-            try: ##### try this insert random children in missing group
-                new = Announcements(**new_announcement)
-                subjects = GradesSubjects.subjects_by_teacher(current_user.id)  
-                new.grade_groups = [x for x in subjects]
-                db.session.add(new)
-                db.session.commit()
-            except Exception as e:
-                print(e)
-                db.session.rollback()
-
-
-            
+        #     try: ##### try this insert random children in missing group
+        #         new = Announcements(**new_announcement)
+        #         subjects = GradesSubjects.subjects_by_teacher(current_user.id)  
+        #         new.grade_groups = [x for x in subjects]
+        #         db.session.add(new)
+        #         db.session.commit()
+        #     except Exception as e:
+        #         print(e)
+        #         db.session.rollback()
 
         return redirect(url_for('teachers.announcements'))
         

@@ -2,7 +2,12 @@
 async function load_info(){
     let teacher = parseInt (document.getElementById('teacher').innerHTML)
     let class_select = document.getElementById('class_select')
-    let select_student = document.getElementById("student_select")
+    let select_student = document.getElementById("student_select") 
+    let parents = document.getElementById("parents_select")
+    let doc = document.getElementById('formFile')
+    let small = document.querySelector('small')
+    doc.addEventListener('click',function() {this.style.borderColor = 'rgb(207,207,207)', small.innerHTML = ''})
+    
     //document.querySelector('button').addEventListener('click',)
 
     const res = await fetch('/api/teachers/groups/' + teacher)
@@ -19,7 +24,7 @@ async function load_info(){
         }
         class_select.addEventListener('change',function(){ load_students(select_student,class_select)}
         )
-        document.getElementById("parents_select").addEventListener('click',function(){
+        parents.addEventListener('click',function(){
             student_select(this.value,select_student)},false)
     }
 
@@ -31,9 +36,11 @@ async function load_info(){
     radio1.addEventListener('click',function(){
         radio_form(0)
     },false)
+
+    document.getElementById('submit_data').addEventListener('click',()=> {
+        validate_data(class_select,select_student,parents,doc,small,radio1)
+    })
 }
-
-
 
 function radio_form(show){
     let form = document.getElementById("fieldset2")
@@ -74,5 +81,28 @@ async function load_students(select,class_){
             option.innerHTML = x.name + ' '+ x.lastname
             select.appendChild(option)
         }
+    }
+}
+
+async function validate_data(class_,student,parents,doc,small,all_parents_radio){
+    //let data = {}
+    // if(!doc.value){
+    //     console.log('no file')
+    //     doc.style.borderColor = 'red'
+    //     small.innerHTML = '*please attach a file'
+    // }
+    // else{
+    //     console.log('file')
+
+    // }
+    if(all_parents_radio){
+        const data = new FormData()
+        data.append('file',doc.files[0])
+        data.append('Manchester','United')
+        const res = await fetch('/api/announcements',{ 
+        method:'POST',
+        body:data,})
+        const data_response = await res.json()
+        console.log(res.status)
     }
 }

@@ -67,7 +67,7 @@ class Children(db.Model):
     email = db.Column(db.String(20),nullable = True)
     active = db.Column(ENUM('yes','no'),default = 'yes')
     grades = db.relationship('Grades',back_populates = 'child')
-    announcements = db.relationship('announcements',
+    announcements = db.relationship('Announcements',
         secondary=announcements_children, back_populates = 'children')
     #groups = db.relationship('GradeGroups',secondary=children_grade_groups, back_populates = 'children')
     
@@ -94,7 +94,7 @@ class GradeGroups(db.Model):
     classroom = db.Column(db.String(5), nullable = True)
     subjects = db.relationship('GradesSubjects',back_populates = 'grade_group')
     #children = db.relationship('Children',secondary=children_grade_groups, back_populates = 'groups')
-    announcements = db.relationship('announcements',
+    announcements = db.relationship('Announcements',
         secondary=announcements_children, back_populates = 'grade_groups')
     
 
@@ -145,9 +145,9 @@ class Announcements(db.Model):
     teacher_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('users.user_id'),nullable=False)
     teacher = db.relationship('Users',back_populates = 'announcements')
     filelink = db.Column(db.String(256),nullable = True)
-    grade_groups = db.relationship('announcements_children',
+    grade_groups = db.relationship('GradeGroups',
         secondary=announcements_children, back_populates = 'announcements')
-    children = db.relationship('children',
+    children = db.relationship('Children',
         secondary=announcements_children, back_populates = 'announcements')
 
     
