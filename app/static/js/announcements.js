@@ -98,7 +98,7 @@ async function validate_data(class_,student,parents,doc,small,all_parents_radio)
     if(all_parents_radio){
         const data = new FormData()
         data.append('file',doc.files[0])
-        data.append('Manchester','United')
+        
         const res = await fetch('/api/announcements',{ 
         method:'POST',
         body:data,})

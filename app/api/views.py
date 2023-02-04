@@ -7,10 +7,11 @@ from datetime import date
 from json import JSONEncoder
 from webargs import fields 
 from webargs.flaskparser import use_kwargs
+from sqlalchemy import func 
 from app.schemas.grades import GradesSchema,EventsSchema,\
     ChildrenSchema,GradesSubjectsSchema, AnnouncementsSchema
 from app.models.grades import Grades, Events,Children,GradesSubjects,\
-    Announcements
+    Announcements, childrenGradesGroups, AnnouncementsChildren
 from app.database import db
 from ..teachers.views import teachers
 
@@ -103,12 +104,46 @@ class Teacherclasses(Resource):
         return grades_subject_schemas.dump(subjects),HTTPStatus.OK
 
 
-class Announcements(Resource):
+class AnnouncementsResource(Resource):
     def post(self): 
-        data = request.files.get('file')
-        team = request.form.get('Manchester')
 
-        print(data.filename, team)
+        if not request.form.get('class'):
+            #try:
+            print('df')
+            new_announcement = Announcements(date=date.today(),
+                teacher_id=current_user.id,filelink='gcp.cloudstorage.com')#complete
+            db.session.add(new_announcement)
+            new_announcement_id = db.session.query(func.last_insert_id()).first()[0]
+            grade_groups = GradesSubjects.subjects_by_teacher(current_user.id)
+
+            # new_announcement.grade_groups = [ _ for _ in grade_groups]
+            
+            for x in grade_groups:
+                children = childrenGradesGroups.children_by_grade_group(x.grade_group_id)
+                for i in children:
+                    print('announcement: ',new_announcement_id,
+                        'child_id: ',i.child_id,'group_id: ',x.grade_group_id)
+                    # announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
+                    # child_id = )
+            # print('skdjfhksjd')      
+            # db.session.add(new_announcement)
+            # db.session.commit() 
+
+            return {'message':'new announcement created'},HTTPStatus.CREATED
+        # except Exception as e:
+            #     print(e)
+            #     db.session.rollback()
+            #     return {'message':'server error'},HTTPStatus.BAD_REQUEST
+
+            
+        else:
+            print('class')
+            # data = request.files.get('file')
+
+            # print(data.filename)
+
+
+        
         # data = request.form.get('radio1')
         # print(data)
         # print('hello madafaka')
