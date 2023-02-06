@@ -85,24 +85,40 @@ async function load_students(select,class_){
 }
 
 async function validate_data(class_,student,parents,doc,small,all_parents_radio){
-    //let data = {}
-    // if(!doc.value){
-    //     console.log('no file')
-    //     doc.style.borderColor = 'red'
-    //     small.innerHTML = '*please attach a file'
-    // }
-    // else{
-    //     console.log('file')
-
-    // }
-    if(all_parents_radio){
+    
+    if(!doc.value){
+        console.log('no file')
+        doc.style.borderColor = 'red'
+        small.innerHTML = '*please attach a file'
+    }
+    else{
+        let reason = document.getElementById('reason_id')
+        console.log(reason.value)
         const data = new FormData()
         data.append('file',doc.files[0])
-        
+        data.append('reason',reason.value)
+            
+        if (!all_parents_radio.checked){
+                
+            let grade_subject = class_.value
+            data.append('class',grade_subject)
+
+            if (parseInt(parents.value) == 2){
+                data.append('student',student.value)
+            }
+                
+        }
+        for (var pair of data.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]); 
+        }
         const res = await fetch('/api/announcements',{ 
-        method:'POST',
-        body:data,})
+            method:'POST',
+            body:data,
+        })
         const data_response = await res.json()
         console.log(res.status)
+        console.log(data_response.message)
+
     }
+    
 }

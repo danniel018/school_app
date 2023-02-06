@@ -5,9 +5,10 @@ from http import HTTPStatus
 from marshmallow import ValidationError
 from datetime import date
 from json import JSONEncoder
-from webargs import fields 
+from webargs import fields  
 from webargs.flaskparser import use_kwargs
-from sqlalchemy import func 
+from sqlalchemy import func
+from marshmallow.validate import OneOf 
 from app.schemas.grades import GradesSchema,EventsSchema,\
     ChildrenSchema,GradesSubjectsSchema, AnnouncementsSchema
 from app.models.grades import Grades, Events,Children,GradesSubjects,\
@@ -107,75 +108,68 @@ class Teacherclasses(Resource):
 class AnnouncementsResource(Resource):
     def post(self): 
 
-        if not request.form.get('class'):
-            #try:
-            print('df')
-            new_announcement = Announcements(date=date.today(),
-                teacher_id=current_user.id,filelink='gcp.cloudstorage.com')#complete
+        
+        try:
+            file = request.files.get('file')
+            reason = request.form.get('reason') 
+            if str(reason) != 'announcement' and str(reason) != 'summons':
+                raise ValueError
+        
+            new_announcement = Announcements(type = reason,date=date.today(),
+                    teacher_id=current_user.id,filelink=f'{file.filename}-cloudstorage.com') 
             db.session.add(new_announcement)
             new_announcement_id = db.session.query(func.last_insert_id()).first()[0]
-            grade_groups = GradesSubjects.subjects_by_teacher(current_user.id)
 
-            # new_announcement.grade_groups = [ _ for _ in grade_groups]
+            if not request.form.get('class'):
+                
+                grade_groups = GradesSubjects.subjects_by_teacher(current_user.id)
+
+                
+                for x in grade_groups:
+                    children = childrenGradesGroups.children_by_grade_group(x.grade_group_id)
+                    for i in children:
+                        print('announcement: ',new_announcement_id,
+                            'child_id: ',i.child_id,'group_id: ',x.grade_group_id)
+                        announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
+                        child_id =i.child_id,grede_group_id = x.grade_group_id)
+                
+                return {'message':'new announcement created'},HTTPStatus.CREATED 
+
+            else:
+                
+                grade_subject_id = int(request.form.get('class'))
+                
+                if not request.form.get('student'):
+                    children = Children.by_class(grade_subject_id)
+                    grade_group = GradesSubjects.by_id(grade_subject_id) 
+                    for x in children:
+                        print('ann_id: ',new_announcement_id,'child: ',x.child_id,'group: ',grade_group.grade_group_id)
+                        announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
+                        child_id =x.child_id,grede_group_id = grade_group.grade_group_id)
+
+                    return {'message':'new announcement created'},HTTPStatus.CREATED 
+
+                else: 
+                    child_id = int(request.form.get('student'))
+                    child = childrenGradesGroups.by_id(child_id)
+                    print('ann_id: ',new_announcement_id,'child: ',child.child_id,'group: ',child.grade_group_id)
+                    announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
+                        child_id =child.child_id,grade_group_id = child.grade_group_id)
+
+                    return {'message':'new announcement created'},HTTPStatus.CREATED 
+
+
+            #UPLOAD FILE TO CLOUD STORAGE SERVER
+            #UPLOAD FILE TO CLOUD STORAGE SERVER
+            #UPLOAD FILE TO CLOUD STORAGE SERVER
             
-            for x in grade_groups:
-                children = childrenGradesGroups.children_by_grade_group(x.grade_group_id)
-                for i in children:
-                    print('announcement: ',new_announcement_id,
-                        'child_id: ',i.child_id,'group_id: ',x.grade_group_id)
-                    # announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
-                    # child_id = )
-            # print('skdjfhksjd')      
-            # db.session.add(new_announcement)
-            # db.session.commit() 
+            db.session.add(announcement_children) 
+            db.session.commit()
 
-            return {'message':'new announcement created'},HTTPStatus.CREATED
-        # except Exception as e:
-            #     print(e)
-            #     db.session.rollback()
-            #     return {'message':'server error'},HTTPStatus.BAD_REQUEST
-
-            
-        else:
-            print('class')
-            # data = request.files.get('file')
-
-            # print(data.filename)
-
-
-        
-        # data = request.form.get('radio1')
-        # print(data)
-        # print('hello madafaka')
-        # announcement_date = date.today()
-        # if int(data) == 1:
-        #     parents = request.form.get('parents_select')
-        #     if parents == 0:
-        #         "logic"
-        #     else:
-        #         student = request.form.get('student_select')
-        # else:
-        #     announcement = {}
-        #     announcement['date'] = announcement_date
-        #     announcement['teacher_id'] = current_user.id
-        #     announcement['filelink'] = 'www.skdfhksjdhfk.com'
-        #     announcement = JSONEncoder(announcement)
-
-        #     try:
-        #         new_announcement = announcements_schema.load(data=announcement)
-        #     except ValidationError as e:
-        #         print(e.messages)
-        #         return e.messages,HTTPStatus.BAD_REQUEST
-            
-        #     try: ##### try this insert random children in missing group
-        #         new = Announcements(**new_announcement)
-        #         subjects = GradesSubjects.subjects_by_teacher(current_user.id)  
-        #         new.grade_groups = [x for x in subjects]
-        #         db.session.add(new)
-        #         db.session.commit()
-        #     except Exception as e:
-        #         print(e)
-        #         db.session.rollback()
+        except (ValueError,AttributeError) as e:
+                print(e)
+                db.session.rollback()
+                return {'message':'wrong data values or keys'},HTTPStatus.BAD_REQUEST
 
         return redirect(url_for('teachers.announcements'))
         

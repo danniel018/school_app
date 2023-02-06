@@ -119,6 +119,9 @@ class GradesSubjects(db.Model):
     classroom = db.Column(db.String(5), nullable = True) 
 
     @classmethod
+    def by_id(cls,grade_subject):
+        return cls.query.filter(cls.grade_subject_id == grade_subject).first()
+    @classmethod
     def subjects_by_teacher(cls,teacher):
         return cls.query.filter(cls.teacher_id == teacher).all()
         
@@ -129,6 +132,11 @@ class childrenGradesGroups(db.Model):
     child_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('children.child_id'))
     grade_group_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('grade_groups.grade_group_id'))
 
+    @classmethod
+    def by_id(cls,child):
+        return cls.query.filter(cls.child_id == child).first()
+    
+    
     @classmethod
     def children_by_grade_group(cls,grade_group):
         return cls.query.filter(cls.grade_group_id == grade_group).all()
@@ -155,6 +163,7 @@ class Announcements(db.Model):
 
     __tablename__ = 'announcements'
     announcement_id = db.Column(INTEGER(unsigned=True),primary_key = True)
+    type = db.Column(ENUM('announcement','summons'))
     date = db.Column(db.Date,nullable = False)
     teacher_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('users.user_id'),nullable=False)
     teacher = db.relationship('Users',back_populates = 'announcements')
