@@ -9,13 +9,14 @@ from app.forms import Events
 teachers = Blueprint('teachers',__name__, url_prefix='/teachers',template_folder='templates') 
 
 @teachers.route('/home')
+@login_required
 def home():
     
 
     return render_template('teachers/home.html')
 
 @teachers.route('/classes')
-
+@login_required
 def teacher_classes():
     year=2022
     y = date.today()
@@ -27,7 +28,8 @@ def teacher_classes():
 
     return render_template('teachers/classes.html',classes=QueriedData.return_rows(classes))
 
-@teachers.route('/classes/<int:grade_subject>',methods=['GET','POST']) 
+@teachers.route('/classes/<int:grade_subject>',methods=['GET','POST'])  
+@login_required
 def class_info(grade_subject):
 
     class_ = db.session.execute("SELECT gs.teacher_id,gg.name, s.name FROM grades_subjects as gs "
@@ -89,6 +91,7 @@ def class_info(grade_subject):
         form = form) 
 
 @teachers.route('/classes/<int:grade_subject>/grades')
+@login_required
 def grades(grade_subject):
 
 
@@ -106,6 +109,7 @@ def grades(grade_subject):
 
 
 @teachers.route('/classes/<int:grade_subject>/events')
+@login_required
 def class_events(grade_subject):
 
     class_ = db.session.execute("SELECT gs.teacher_id,gg.name, s.name FROM grades_subjects as gs "
@@ -126,6 +130,7 @@ def class_events(grade_subject):
 
 
 @teachers.route('/classes/<int:grade_subject>/events/<int:event>')
+@login_required
 def event(grade_subject,event):
 
     class_ = db.session.execute("SELECT gs.teacher_id,gg.name, s.name FROM grades_subjects as gs "
@@ -142,9 +147,29 @@ def event(grade_subject,event):
 
 
 @teachers.route('/announcements')
+@login_required
 def announcements():
     
     
+    return render_template('teachers/announcements.html')
+
+
+@teachers.route('/announcement/<int:announcement_id>')
+@login_required
+def announcement(announcement_id):
+
+    announcement_data = db.session.execute("SELECT * FROM announcements WHERE "
+        "announcement_id = :aid",{'aid':announcement_id})
+    announcement_data = QueriedData.return_row(announcement_data)
+
+    announcement_children = db.session.execute("SELECT g.name, c.name, c.lastname FROM "
+        "announcements_children as a JOIN grade_groups as g ON a.grade_group_id = "
+        "g.grade_group_id JOIN children as c ON a.child_id = c.child_id WHERE "
+        "a.announcement_id = :aid",{'aid':announcement_id})
+
+    announcement_children = QueriedData.return_rows(announcement_children)
+    
 
     
-    return render_template('teachers/announcements.html')
+    return render_template('teachers/announcement.html',announcement = announcement_data,
+        children = announcement_children)

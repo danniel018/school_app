@@ -122,14 +122,27 @@ class UsersSchema(Schema):
         ,dump_only = True)
 
 
+class AnnouncementsChildrenSchema(Schema):
+    class Meta:
+        ordered = True
+
+    id = fields.Int(dump_only = True)
+    announcement_id = fields.Int(dump_only = True)
+    child_id = fields.Int(dump_only = True)
+    grade_group_id = fields.Int(dump_only = True)
+    announcement = fields.Nested(lambda:AnnouncementsSchema())
+    child = fields.Nested(ChildrenSchema(only = ('name','lastname')))
+    grade_group = fields.Nested(GradeGroupsSchema(only = ('grade_group_id','name')))
+
+
 class AnnouncementsSchema(Schema):
     class Meta:
         ordered = True
 
     announcement_id = fields.Int(dump_only = True)
+    announcement_type = fields.String(required=True,
+        validate=validate.OneOf(('announcement','summons'))) 
     date = fields.Date(required=True)
     teacher_id = fields.Int(required = True)
     teacher = fields.Nested(lambda: UsersSchema( only=('name','lastname')), dump_only = True)
     filelink = fields.String(required=True,validate=validate.Length(max=256))
-    grade_groups = fields.Nested(GradeGroupsSchema(only = ('name',)), dump_only = True)
-    children = fields.Nested(ChildrenSchema(only = ('name','lastname')), dump_only = True)

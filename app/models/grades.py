@@ -22,6 +22,11 @@ class AnnouncementsChildren(db.Model):
     child = db.relationship('Children',back_populates = 'announcements')
     grade_group = db.relationship('GradeGroups',back_populates = 'announcements')
 
+    
+    @classmethod
+    def get_by_teacher(cls,teacher):
+        return cls.query.join(Announcements).filter(Announcements.teacher_id == teacher).all()
+
 
 class Events(db.Model):
     __tablename__ = 'class_events'
@@ -163,12 +168,15 @@ class Announcements(db.Model):
 
     __tablename__ = 'announcements'
     announcement_id = db.Column(INTEGER(unsigned=True),primary_key = True)
-    type = db.Column(ENUM('announcement','summons'))
+    announcement_type = db.Column(ENUM('announcement','summons'))
     date = db.Column(db.Date,nullable = False)
     teacher_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('users.user_id'),nullable=False)
     teacher = db.relationship('Users',back_populates = 'announcements')
     filelink = db.Column(db.String(256),nullable = True)
 
+   
+
+    
     def save(self):
         db.session.add(self)
         db.session.commit()

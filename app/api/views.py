@@ -10,7 +10,7 @@ from webargs.flaskparser import use_kwargs
 from sqlalchemy import func
 from marshmallow.validate import OneOf 
 from app.schemas.grades import GradesSchema,EventsSchema,\
-    ChildrenSchema,GradesSubjectsSchema, AnnouncementsSchema
+    ChildrenSchema,GradesSubjectsSchema, AnnouncementsSchema, AnnouncementsChildrenSchema
 from app.models.grades import Grades, Events,Children,GradesSubjects,\
     Announcements, childrenGradesGroups, AnnouncementsChildren
 from app.database import db
@@ -25,6 +25,7 @@ event_schema = EventsSchema()
 grade_schema = GradesSchema()
 grades_subject_schemas = GradesSubjectsSchema(many=True)
 announcements_schema = AnnouncementsSchema()
+
 class GroupGrades(Resource):
     def get(self,subject_id):
 
@@ -105,10 +106,21 @@ class Teacherclasses(Resource):
         return grades_subject_schemas.dump(subjects),HTTPStatus.OK
 
 
-class AnnouncementsResource(Resource):
-    def post(self): 
 
-        
+class AnnouncementResource(Resource):
+    
+    def get(self,teacher_id):
+        announcements_children_schema = AnnouncementsChildrenSchema(many=True)
+        announcements_list = AnnouncementsChildren.get_by_teacher(teacher_id) 
+        print(announcements_list)
+
+        return announcements_children_schema.dump(announcements_list), HTTPStatus.OK
+
+class AnnouncementsResource(Resource):
+    
+   
+
+    def post(self): 
         try:
             file = request.files.get('file')
             reason = request.form.get('reason') 

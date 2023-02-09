@@ -9,7 +9,24 @@ async function load_info(){
     doc.addEventListener('click',function() {this.style.borderColor = 'rgb(207,207,207)', small.innerHTML = ''})
     
     //document.querySelector('button').addEventListener('click',)
+    const get_announcements = await fetch('/api/announcements/' + teacher)
+    const announcements_response = await get_announcements.json()
+    if (get_announcements.status !== 200){
+        alert(get_announcements.status + announcements_response.message)
+    }
+    else {
+        const announcements_section = document.getElementsByClassName('announcements_list')[0]
+        let index = 1
+        announcements_response.forEach(child => {
+            let element = document.createElement('div')
+            element.innerHTML = `<h6 class = "announcements_list_inner">${index}. ${child.announcement.announcement_type}</h6>
+                <p class = "announcements_list_inner"> date of issue: ${child.announcement.date}</p> <p class = "announcements_list_inner">Group: ${child.grade_group.name}</p>
+                <a href="/teachers/announcement/${child.announcement.announcement_id}" class = "announcements_list_inner">more info</a>`
+                
+            announcements_section.appendChild(element)
+        });
 
+    }
     const res = await fetch('/api/teachers/groups/' + teacher)
     const data_response = await res.json()
     if (res.status !== 200){

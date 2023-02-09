@@ -334,6 +334,21 @@
     border-bottom-width: 1px;
     border-bottom-color:#b0b1b6;
  }
+ .announcements_list{
+    margin: 3%;
+    padding: 3%;
+    border-radius: 25px;
+    
+    
+    border: solid 1px rgb(160, 160, 160);
+    color: #e7bf10 !important;
+    text-decoration-color: #b2e40d;
+ }
+
+ .announcements_list_inner{
+    margin: 2px;
+    color: #075b5c;
+ }
  fieldset{
     border: 1px solid #b0b1b6;
     border-radius: 5px;
