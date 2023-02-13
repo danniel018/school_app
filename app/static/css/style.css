@@ -356,6 +356,13 @@
     background-color: #ffffff;
 
  }
+
+ .current-reports{
+    border-left: 1px solid rgb(198, 198, 198);
+    padding-bottom: 5%;
+    
+ }
+ 
  /*
  .modal.fade:not(.in).right .modal-dialog {
      -webkit-transform: translate3d(54%, 0, 0);

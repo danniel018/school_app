@@ -22,7 +22,7 @@
           
           {% include 'sidebar.html' %}
             
-          <div class="col-md9 ms-sm-auto col-lg-10 g-0">
+          <div class="col-md-9 ms-sm-auto col-lg-10 g-0">
             {% with messages = get_flashed_messages(with_categories=true) %}
               {% if messages %}     
                 {% for category,message in messages %}

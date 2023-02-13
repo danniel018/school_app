@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{super()}} | Reports
+{% endblock title %}
+
+{% block content %}
+    <div class="title">
+        <h3>Reports</h3>
+    </div>
+    <div class="row  mt-3">
+            <div class="col-12 col-lg-8 mb-5">
+                
+                <section class="generate-report">
+                    <div class="row ">
+                        <div class="col-12 col-lg-6">
+                            <h5 class="title">Generate a report on a Student</h5>
+                            <h6 class="title">parents will be notified</h6>
+                            <div class="mb-3">
+                                <label for="class_id" class="form-label">Class</label>
+                                <select  class="form-select" id="class_id" >
+                                    <option value="0">-- Select class --</option>
+                                    {% for x in classes  %}
+                                    <option value="{{x[3]}}">{{x[0]}} {{x[1]}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="class_id" class="form-label">Student</label>
+                                <select  class="form-select" id="students_id" >
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-success" type="button" disabled>Generate Report on this student</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            
+                
+            </div>
+            <div class="col-12 col-lg-4">
+                <section class="current-reports">
+                    <h5 class="title">Current bimester reports</h5>
+                   
+                    
+                </section>
+            </div>
+        
+        
+    </div>
+    <script src= "{{url_for('static',filename='js/reports.js')}}">  </script>
+{% endblock content %}

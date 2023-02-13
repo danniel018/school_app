@@ -20,7 +20,7 @@ async function load_info(){
         announcements_response.forEach(child => {
             let element = document.createElement('div')
             element.innerHTML = `<h6 class = "announcements_list_inner">${index}. ${child.announcement.announcement_type}</h6>
-                <p class = "announcements_list_inner"> date of issue: ${child.announcement.date}</p> <p class = "announcements_list_inner">Group: ${child.grade_group.name}</p>
+                <p class = "announcements_list_inner"> date of issue: ${child.announcement.date}</p> <p class = "announcements_list_inner">Group or groups(fix): ${child.grade_group.name}</p>
                 <a href="/teachers/announcement/${child.announcement.announcement_id}" class = "announcements_list_inner">more info</a>`
                 
             announcements_section.appendChild(element)

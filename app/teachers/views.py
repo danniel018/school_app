@@ -161,7 +161,7 @@ def announcement(announcement_id):
     announcement_data = db.session.execute("SELECT * FROM announcements WHERE "
         "announcement_id = :aid",{'aid':announcement_id})
     announcement_data = QueriedData.return_row(announcement_data)
-
+ 
     announcement_children = db.session.execute("SELECT g.name, c.name, c.lastname FROM "
         "announcements_children as a JOIN grade_groups as g ON a.grade_group_id = "
         "g.grade_group_id JOIN children as c ON a.child_id = c.child_id WHERE "
@@ -173,3 +173,19 @@ def announcement(announcement_id):
     
     return render_template('teachers/announcement.html',announcement = announcement_data,
         children = announcement_children)
+
+
+@teachers.route('/reports')
+@login_required
+def reports():
+
+    year = 2022
+    classes = db.session.execute("SELECT gp.name,s.name,gp.grade_group_id,gs.grade_subject_id FROM "
+        "grade_groups as gp JOIN grades_subjects as gs "
+        "ON gp.grade_group_id = gs.grade_group_id JOIN subjects as s ON s.subject_id = gs "
+        ".subject_id WHERE gs.teacher_id = :id AND gp.year = :year",{'id':current_user.id,'year':year})
+
+    classes = QueriedData.return_rows(classes)
+
+    
+    return render_template('teachers/reports.html', classes = classes)
