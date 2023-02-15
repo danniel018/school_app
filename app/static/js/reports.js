@@ -1,10 +1,14 @@
+window.onload = load_reports()
+
 let select = document.getElementById('class_id')
 select.addEventListener('change',
     ()=> {students_data()})
 
 let students = document.getElementById('students_id')
 let btn = document.querySelector('.btn')
-
+const alert_section =document.getElementsByClassName('alert-messages')[0]
+const alert_text = document.getElementById('alert-text')
+btn.addEventListener('click',()=> submit_data(select.value,students.value))
 async function students_data(){
     btn.disabled = true
     while (students.childElementCount > 0){
@@ -28,4 +32,50 @@ async function students_data(){
         btn.disabled = false
     }
    
+}
+
+async function submit_data(class_,student){
+    data={grade_subject_id:parseInt (class_),
+        child_id:parseInt(student)}
+   
+    const post = await fetch('/api/reports',
+        {method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(data)
+        } 
+    )
+    const response = await post.json() 
+
+    if (post.status === 200){ 
+        window.scrollTo({top: 0,behavior:'smooth'})
+        alert_section.hidden = false
+        alert_text.innerHTML = response.message
+        setTimeout(()=>{location.reload()}, 2500)
+    }
+    else {
+        alert('error al generar reporte')
+    }
+    
+}
+
+async function load_reports (){
+    console.log('fuckyou Arsenal')
+    // const get_reports = await fetch('/api/reports')
+    // const reports_response = await get_reports.json()
+    // if (get_reports.status !== 200){
+    //     alert(get_reports.status + reports_response.message)
+    // }
+    // else {
+    //     const reports_section = document.getElementsByClassName('current_reports')[0]
+    //     let index = 1
+    //     reports_response.forEach(report => {
+    //         let element = document.createElement('div')
+    //         element.innerHTML = `<h6 class = "announcements_list_inner">${index}. ${report.announcement.announcement_type}</h6>
+    //             <p class = "announcements_list_inner"> date of issue: ${report.announcement.date}</p> <p class = "announcements_list_inner">Group or groups(fix): ${report.grade_group.name}</p>
+    //             <a href="/teachers/announcement/${report.announcement.announcement_id}" class = "announcements_list_inner">more info</a>`
+                
+    //         reports_section.appendChild(element)
+    //     });
+
+    // }
 }

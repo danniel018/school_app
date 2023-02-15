@@ -10,10 +10,13 @@ from webargs.flaskparser import use_kwargs
 from sqlalchemy import func
 from marshmallow.validate import OneOf 
 from app.schemas.grades import GradesSchema,EventsSchema,\
-    ChildrenSchema,GradesSubjectsSchema, AnnouncementsSchema, AnnouncementsChildrenSchema
+    ChildrenSchema,GradesSubjectsSchema, AnnouncementsSchema, \
+        AnnouncementsChildrenSchema, ReportsSchema
+
 from app.models.grades import Grades, Events,Children,GradesSubjects,\
-    Announcements, childrenGradesGroups, AnnouncementsChildren
+    Announcements, childrenGradesGroups, AnnouncementsChildren, Reports
 from app.database import db
+
 from ..teachers.views import teachers
 
 
@@ -118,8 +121,6 @@ class AnnouncementResource(Resource):
 
 class AnnouncementsResource(Resource):
     
-   
-
     def post(self): 
         try:
             file = request.files.get('file')
@@ -184,4 +185,34 @@ class AnnouncementsResource(Resource):
                 return {'message':'wrong data values or keys'},HTTPStatus.BAD_REQUEST
 
         return redirect(url_for('teachers.announcements'))
+        
+class ReportsResource(Resource):
+
+
+    def get(self):
+
+        reports_schema = ReportsSchema(many=True)
+        report_list = Reports.get_by_teacher(current_user.id) 
+        print(report_list)
+
+        return reports_schema.dump(report_list),HTTPStatus.OK
+    
+    def post(self):
+        reports_schema = ReportsSchema()
+        report = request.get_json()
+
+        try:
+            new_report = reports_schema.load(data = report)
+
+        except ValidationError as e:
+            print(e)
+            print(e.messages)
+            return {'message':e.messages},HTTPStatus.BAD_REQUEST
+
+        print(new_report) 
+        new = Reports(**new_report)
+        new.filename = 'carcassbadasssong.xlsx'
+        new.save()
+
+        return {'message':'Reporte generado!'},HTTPStatus.OK
         

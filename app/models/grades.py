@@ -12,6 +12,19 @@ from datetime import datetime
 #         db.ForeignKey('children.child_id') ,nullable = False))
     
 
+class DataBaseChanges:
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+    
+    def discard(self):
+        db.session.rollback()
+
 class AnnouncementsChildren(db.Model):
     __tablename__ = 'announcements_children'
     id = db.Column(INTEGER(unsigned=True),primary_key = True)
@@ -83,6 +96,8 @@ class Children(db.Model):
     active = db.Column(ENUM('yes','no'),default = 'yes')
     grades = db.relationship('Grades',back_populates = 'child')
     announcements = db.relationship('AnnouncementsChildren',back_populates = 'child')
+    reports = db.relationship('Reports',back_populates = 'child')
+    
     #groups = db.relationship('GradeGroups',secondary=children_grade_groups, back_populates = 'children')
     
     @classmethod
@@ -122,6 +137,7 @@ class GradesSubjects(db.Model):
     teacher_id = db.Column(INTEGER(unsigned=True),db.ForeignKey('users.user_id')) # Update foreign key
     teacher = db.relationship('Users',back_populates = 'classes')
     classroom = db.Column(db.String(5), nullable = True) 
+    reports = db.relationship('Reports',back_populates = 'grade_subject')
 
     @classmethod
     def by_id(cls,grade_subject):
@@ -174,9 +190,30 @@ class Announcements(db.Model):
     teacher = db.relationship('Users',back_populates = 'announcements')
     filelink = db.Column(db.String(256),nullable = True)
 
-   
-
-    
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+
+
+class Reports(db.Model,DataBaseChanges):
+
+    __tablename__ = 'reports'
+    report_id = db.Column(INTEGER(unsigned=True),primary_key = True)
+
+    grade_subject_id = db.Column(INTEGER(unsigned=True),
+        db.ForeignKey('grades_subjects.grade_subject_id'),nullable=False)
+    grade_subject = db.relationship('GradesSubjects',back_populates = 'reports')
+    
+    child_id = db.Column(INTEGER(unsigned=True),
+        db.ForeignKey('children.child_id'),nullable=False)
+    child = db.relationship('Children',back_populates = 'reports')
+
+    created_at = db.Column(db.DateTime(),default = datetime.utcnow)
+    filename = db.Column(db.String(256),nullable = False)
+
+    @classmethod
+    def get_by_teacher(cls,teacher):
+        return cls.query.join(GradesSubjects)\
+            .filter(GradesSubjects.teacher_id == teacher).all()
+        

@@ -362,6 +362,14 @@
     padding-bottom: 5%;
     
  }
+
+.alert-messages{
+    background-color: #03b44d;
+    padding: 20px;
+    margin: 0;
+    border-radius: 10px;
+   
+}
  
  /*
  .modal.fade:not(.in).right .modal-dialog {

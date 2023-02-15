@@ -146,3 +146,20 @@ class AnnouncementsSchema(Schema):
     teacher_id = fields.Int(required = True)
     teacher = fields.Nested(lambda: UsersSchema( only=('name','lastname')), dump_only = True)
     filelink = fields.String(required=True,validate=validate.Length(max=256))
+
+
+class ReportsSchema(Schema):
+    class Meta:
+        ordered = True
+
+    report_id = fields.Int(dump_only = True)
+    grade_subject_id = fields.Int(required = True)
+    grade_subject = fields.Nested(GradesSubjectsSchema(
+        only=('grade_group','subject')), dump_only = True)
+    
+    child_id = fields.Int(required = True)
+    child = fields.Nested(ChildrenSchema(
+        only=('name','lastname')), dump_only = True)
+    
+    created_at = fields.DateTime(dump_only = True)
+    filename = fields.String(dump_only=True)
