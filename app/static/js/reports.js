@@ -9,6 +9,7 @@ let btn = document.querySelector('.btn')
 const alert_section =document.getElementsByClassName('alert-messages')[0]
 const alert_text = document.getElementById('alert-text')
 btn.addEventListener('click',()=> submit_data(select.value,students.value))
+
 async function students_data(){
     btn.disabled = true
     while (students.childElementCount > 0){
@@ -60,22 +61,29 @@ async function submit_data(class_,student){
 
 async function load_reports (){
     console.log('fuckyou Arsenal')
-    // const get_reports = await fetch('/api/reports')
-    // const reports_response = await get_reports.json()
-    // if (get_reports.status !== 200){
-    //     alert(get_reports.status + reports_response.message)
-    // }
-    // else {
-    //     const reports_section = document.getElementsByClassName('current_reports')[0]
-    //     let index = 1
-    //     reports_response.forEach(report => {
-    //         let element = document.createElement('div')
-    //         element.innerHTML = `<h6 class = "announcements_list_inner">${index}. ${report.announcement.announcement_type}</h6>
-    //             <p class = "announcements_list_inner"> date of issue: ${report.announcement.date}</p> <p class = "announcements_list_inner">Group or groups(fix): ${report.grade_group.name}</p>
-    //             <a href="/teachers/announcement/${report.announcement.announcement_id}" class = "announcements_list_inner">more info</a>`
+    let param = {'teacher':parseInt(document.getElementById('teacher').innerHTML)}
+    
+    let params = new URLSearchParams(param)
+    const get_reports = await fetch('/api/reports?'+params)//query params
+    const reports_response = await get_reports.json()
+    if (get_reports.status !== 200){
+        alert(get_reports.status + reports_response.message)
+    }
+    else {
+        const reports_section = document.getElementsByClassName('current-reports')[0]
+        let index = 1
+        reports_response.forEach(report => {
+            let element = document.createElement('div')
+            element.className = 'new_report'
+            element.innerHTML = `<h6 class = "announcements_list_inner">${index}. 
+                Report on:${report.child.name} ${report.child.lastname}</h6>
+                <p class = "announcements_list_inner"> 
+                    class:${report.grade_subject.grade_group.name} ${report.grade_subject.subject.name}</p> 
+                    <p class = "announcements_list_inner">Date: ${report.created_at}</p>
+                <a href="/teachers/announcement/${report.filename}" class = "announcements_list_inner">${report.filename}</a>`
                 
-    //         reports_section.appendChild(element)
-    //     });
+            reports_section.appendChild(element)
+        });
 
-    // }
+    }
 }

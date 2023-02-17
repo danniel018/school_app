@@ -5,6 +5,8 @@
 {% endblock title %}
 
 {% block content %}
+    <p id="teacher" hidden>{{current_user.id}}</p> 
+
     <div class="row justify-content-center">
         <div class="col-12 col-lg-6">
             <section class="alert-messages" hidden>
@@ -47,12 +49,13 @@
                 
             </div>
             <div class="col-12 col-lg-4">
+                <h5 class="title">Current bimester reports</h5>
                 <section class="current-reports">
-                    <h5 class="title">Current bimester reports</h5>
                    
                     
                 </section>
             </div>
+            
         
         
     </div>

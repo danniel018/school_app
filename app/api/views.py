@@ -188,14 +188,15 @@ class AnnouncementsResource(Resource):
         
 class ReportsResource(Resource):
 
+    @use_kwargs({'teacher':fields.Int(missing = None)},location = 'query')
+    def get(self,teacher=None):
 
-    def get(self):
+        if not teacher == None:
+            reports_schema = ReportsSchema(many=True)
+            report_list = Reports.get_by_teacher(current_user.id)         
+            print(report_list)
 
-        reports_schema = ReportsSchema(many=True)
-        report_list = Reports.get_by_teacher(current_user.id) 
-        print(report_list)
-
-        return reports_schema.dump(report_list),HTTPStatus.OK
+            return reports_schema.dump(report_list),HTTPStatus.OK
     
     def post(self):
         reports_schema = ReportsSchema()

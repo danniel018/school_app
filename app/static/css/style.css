@@ -340,11 +340,18 @@
     border-radius: 25px;
     
     
-    border: solid 1px rgb(160, 160, 160);
+    border: solid 1px rgb(22, 152, 89);
     color: #e7bf10 !important;
     text-decoration-color: #b2e40d;
  }
 
+ .current-reports{
+    padding: 5%;
+ }
+.new_report{
+    border-bottom: solid 1px rgb(200, 200, 200);
+    padding-bottom: 10px;
+}
  .announcements_list_inner{
     margin: 2px;
     color: #075b5c;
