@@ -42,6 +42,8 @@ def class_info(grade_subject):
     
     form = Events()
 
+    no_added_events = False
+
     students = db.session.execute("SELECT c.child_id,c.name, c.lastname FROM children as c JOIN children_grade_groups as "
         "cg ON c.child_id = cg.child_id JOIN grade_groups as gg ON cg.grade_group_id = gg.grade_group_id "
         "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  WHERE gs.grade_subject_id = :id",{'id':grade_subject})
@@ -50,6 +52,8 @@ def class_info(grade_subject):
     events =  db.session.execute("SELECT event_type,name,description,date FROM class_events WHERE grade_subject_id = :id "
         "AND bimester = 4 ORDER BY posted_on DESC",{'id':grade_subject})
     events = QueriedData.return_rows(events)
+    if len(events) == 0:
+        no_added_events = True
     week_events = []
     exams = []
     labs = []
@@ -88,7 +92,7 @@ def class_info(grade_subject):
 
     return render_template('teachers/class_info.html',students = students, group= class_data[1], classs= class_data[2],
         events = events, week_events = week_events, exams = exams, labs = labs, nwe = no_week_events, grade_subject = grade_subject,
-        form = form) 
+        form = form, nae = no_added_events) 
 
 @teachers.route('/classes/<int:grade_subject>/grades')
 @login_required

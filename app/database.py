@@ -31,8 +31,7 @@ class QueriedData:
 
     @classmethod
     def return_rows(cls,cursor):
-        print(cursor)
-        print('sdfsd')
+        
         return [x for x in cursor]  
 
     

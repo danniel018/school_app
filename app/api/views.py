@@ -19,6 +19,8 @@ from app.database import db
 
 from ..teachers.views import teachers
 
+from ..excel.reports import ExcelReport 
+
 
 api = Blueprint('api',__name__, url_prefix='/api',template_folder='templates')
 #grades_schema = EventsSchema(many=True, only=('name','grades'))
@@ -194,14 +196,14 @@ class ReportsResource(Resource):
         if not teacher == None:
             reports_schema = ReportsSchema(many=True)
             report_list = Reports.get_by_teacher(current_user.id)         
-            print(report_list)
+            #print(report_list)
 
             return reports_schema.dump(report_list),HTTPStatus.OK
     
     def post(self):
         reports_schema = ReportsSchema()
         report = request.get_json()
-
+        print(report)
         try:
             new_report = reports_schema.load(data = report)
 
@@ -210,10 +212,16 @@ class ReportsResource(Resource):
             print(e.messages)
             return {'message':e.messages},HTTPStatus.BAD_REQUEST
 
-        print(new_report) 
-        new = Reports(**new_report)
-        new.filename = 'carcassbadasssong.xlsx'
-        new.save()
+
+        subject_info = GradesSubjects.by_id(report['grade_subject_id'])
+        child = Children.by_id(report['child_id'])
+
+        file = ExcelReport(child,subject_info)
+        file.average()
+
+        #new = Reports(**new_report)
+        #new.filename = 'carcassbadasssong.xlsx'
+        #new.save()
 
         return {'message':'Reporte generado!'},HTTPStatus.OK
         

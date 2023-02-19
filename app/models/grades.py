@@ -82,6 +82,14 @@ class Grades(db.Model):
     def get_by_id(cls,grade):
         return cls.query.filter(cls.grade_id == grade).first()
     
+    @classmethod
+    def by_class_student(cls,child_id,grade_subject_id):
+        return cls.query.join(Events).join(GradesSubjects, 
+            Events.grade_subject_id == GradesSubjects.grade_subject_id)\
+                .filter((cls.child_id == child_id) & 
+                        (Events.grade_subject_id == grade_subject_id)).all()
+        
+        
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -112,7 +120,17 @@ class Children(db.Model):
             .join(childrenGradesGroups).join(GradeGroups)\
             .join(GradesSubjects).filter(GradesSubjects.grade_subject_id == grade_subject_id)\
             .order_by(cls.lastname).all()
-
+    
+    @classmethod
+    def by_id(cls,child_id):
+        return cls.query.filter(cls.child_id == child_id).first()
+    
+    @classmethod
+    def grades_by_class(cls,child_id):
+        return cls.query.\
+            join(Grades).join(Events, Grades.event_id == Events.event_id).\
+                filter(cls.child_id == child_id).first()
+    
 
 class GradeGroups(db.Model):
     __tablename__ = 'grade_groups'

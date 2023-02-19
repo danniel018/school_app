@@ -30,9 +30,13 @@
             <div class="card text-white bg-success mb-3" style="max-width: 18rem; background-color: rgb(181, 68, 152)  !important;">
               <div class="card-header">Last added Event</div>
               <div class="card-body">
-                <h5 class="card-title">Event: {{events[0][0]}} </h5>
-                <h6 class="card-text">Name: {{events[0][1]}}</h6>
-                <h6 class="card-text">Date:{{events[0][3]}} </h6>
+                {% if nae %}
+                  <h6>no added events so far</h6>
+                {% else %}
+                  <h5 class="card-title">Event: {{events[0][0]}} </h5>
+                  <h6 class="card-text">Name: {{events[0][1]}}</h6>
+                  <h6 class="card-text">Date:{{events[0][3]}} </h6>
+                {% endif %}
                 <br>
               </div>
             </div>

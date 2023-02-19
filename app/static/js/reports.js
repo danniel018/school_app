@@ -76,9 +76,9 @@ async function load_reports (){
             let element = document.createElement('div')
             element.className = 'new_report'
             element.innerHTML = `<h6 class = "announcements_list_inner">${index}. 
-                Report on:${report.child.name} ${report.child.lastname}</h6>
+                Report on: ${report.child.name} ${report.child.lastname}</h6>
                 <p class = "announcements_list_inner"> 
-                    class:${report.grade_subject.grade_group.name} ${report.grade_subject.subject.name}</p> 
+                    class: ${report.grade_subject.grade_group.name} ${report.grade_subject.subject.name}</p> 
                     <p class = "announcements_list_inner">Date: ${report.created_at}</p>
                 <a href="/teachers/announcement/${report.filename}" class = "announcements_list_inner">${report.filename}</a>`
                 
