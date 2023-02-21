@@ -218,6 +218,7 @@ class ReportsResource(Resource):
 
         file = ExcelReport(child,subject_info)
         file.average()
+        file.generate_report() 
 
         #new = Reports(**new_report)
         #new.filename = 'carcassbadasssong.xlsx'
