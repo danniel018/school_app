@@ -3,7 +3,7 @@
     <ul class="nav flex-column">
         {% if current_user.user_type == 'teacher' %}
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">
+                <a class="nav-link active" aria-current="page" href="{{url_for('teachers.home')}}">
                     <span data-feather="home" class="align-text-bottom"></span>
                     Teachers Home <span id="department" ></span>
                 </a>

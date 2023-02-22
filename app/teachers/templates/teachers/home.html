@@ -7,7 +7,48 @@
    
 {% block content %}
     
-<h1>Guns N' F**ng Roses t</h1>
+    <div class="row mb-3">
+        <h3> Hello, {{teacher[0]}}</h3>
+    </div>
+    
+    <div class="row">
+        <div class="col-4">
+            <div class="card next-class" >
+                <div class="card-header"><h6>Your next Lesson</h6></div>
+                <div class="card-body">
+                  <h5 class="card-title">7A Maths</h5>
+                  <p class="card-text">Today</p>
+                  <p class="card-text">13:00 Classroom: GO403</p>
+                  <p class="card-text">Don't be late!</p>
+                  
+                </div>
+              </div>
+        </div>
+        <div class="col-8">
+            <div class="card text-center large-card">
+                <div class="card-header">
+                  Week Summary
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Feb 20 2023 to Feb 24 2023</h5>
+                  <p class="card-text">this week you have:</p>
+                  <div class="week-summary">
+                    <p >Lessons to instruct: 7</p>
+                    <p >Events created: 2</p>
+                    <p >Laboratories: 1</p>
+                    <p >assessments: 2</p>
+                    <p >isuued reports: 0</p>
+                    <p >issued announcements: 1</p>  
+                  </div>    
+                </div>
+                <div class="card-footer" >
+                   More info in your general panel 
+                </div>
+              </div>
+
+        </div>
+
+    </div>
     
     
 {% endblock content %}

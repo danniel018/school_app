@@ -162,6 +162,42 @@
  .dropdown-item{
     color: white;
  }
+
+.next-class{
+    background-color: #11ad77;
+    color: #ffffff;
+    height:100%;
+    width: 100%;
+}
+.large-card{
+    background-color: #026869;
+    color: #ffffff;
+}
+.large-card h5{
+    color: rgb(129, 187, 232);
+}
+.week-summary{
+    padding: 5px;
+    
+}
+ .week-summary p{
+    border: solid 2px rgb(129, 187, 232);
+    border-radius: 25px;
+    display: inline-block;
+    padding: 0.7rem;
+    margin-top: 0.5rem;
+
+} 
+.next-class h6,.next-class h5{
+    color: #ffffff;
+    
+    padding-bottom: 0;
+}
+
+.card-footer{
+    color: white;
+}
+
  .card-home .card{
      height: 19rem;
  }
