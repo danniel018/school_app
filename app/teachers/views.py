@@ -1,7 +1,7 @@
 from os import abort
 from flask import Blueprint ,make_response, render_template,flash,redirect,url_for,request,jsonify
 from flask_login import login_user, login_required, logout_user, current_user
-from datetime import date
+from datetime import date, timedelta, time, datetime
 from app.database import db, QueriedData
 from app.forms import Events
 
@@ -11,12 +11,40 @@ teachers = Blueprint('teachers',__name__, url_prefix='/teachers',template_folder
 @teachers.route('/home')
 @login_required
 def home():
+
     teacher = db.session.execute("SELECT name, lastname FROM users WHERE "
         "user_id = :uid",{'uid':current_user.id})
     teacher = QueriedData.return_row(teacher)
 
+    today = date.today()
+    week = today.isocalendar()[1]
 
-    return render_template('teachers/home.html', teacher = teacher)
+    week_classes = db.session.execute(" SELECT s.weekday_iso,s.start,s.end FROM "
+        "schedule_subjects as s JOIN grades_subjects as g ON s.grade_subject_id = "
+        "g.grade_subject_id WHERE g.teacher_id = :tid",{'tid':current_user.id})
+    
+    week_classes  = QueriedData.return_rows(week_classes)
+
+     
+    next_classes = []
+    for day in week_classes:
+        daytime = datetime.fromisocalendar(today.year,week,day[0]) 
+        #print(day[1])
+        time_ = time.fromisoformat(day[1])
+        #print(time_)
+        daytime = daytime + timedelta(hours=time_.hour,minutes=time_.minute)
+        if daytime > datetime.now():
+            next_classes.append(daytime.strftime("%b %d %Y at %H:%M"))
+
+    next_classes = sorted(next_classes)       
+
+    
+        
+
+    
+
+
+    return render_template('teachers/home.html', teacher = teacher, next_classes = next_classes)
 
 @teachers.route('/classes')
 @login_required

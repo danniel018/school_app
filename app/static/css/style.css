@@ -173,7 +173,7 @@
     background-color: #026869;
     color: #ffffff;
 }
-.large-card h5{
+.large-card h5, .large-card h6{
     color: rgb(129, 187, 232);
 }
 .week-summary{
