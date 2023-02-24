@@ -71,6 +71,39 @@ def home():
         lessons = lessons, events = events, laboratories = laboratories, assessments = assessments,
         issued_announcements = issued_announcements, issued_reports = reports)
 
+
+@teachers.route('/my-group')
+@login_required
+def teacher_group():
+    year=2022
+    group = db.session.execute("SELECT grade_group_id,name,classroom FROM "
+        "grade_groups WHERE director_id = :did AND year = :year",
+        {'did':current_user.id,'year':year})
+    group = QueriedData.return_row(group)
+
+    children = db.session.execute("SELECT c.child_id,c.name,c.lastname FROM children "
+        "as c JOIN children_grade_groups as g ON c.child_id = g.child_id "
+        "WHERE g.grade_group_id = :ggid",{'ggid':group[0]})
+    children = QueriedData.return_rows(children)
+    print(len(children))
+    
+
+    subjects = db.session.execute("SELECT g.name,s.name,u.name FROM grade_groups as g "
+                                  "JOIN grades_subjects as gs ON g.grade_group_id = "
+                                  "gs.grade_group_id JOIN subjects as s ON gs.subject_id = "
+                                  "s.subject_id JOIN users as u ON gs.teacher_id = "
+                                  "u.user_id WHERE gs.grade_group_id = :gid",{'gid':group[0]}) 
+   
+    subjects = QueriedData.return_rows(subjects)
+
+    return render_template ('teachers/group.html',group = group, children = children,
+                                subjects = subjects)
+    
+
+
+    
+
+
 @teachers.route('/classes')
 @login_required
 def teacher_classes():

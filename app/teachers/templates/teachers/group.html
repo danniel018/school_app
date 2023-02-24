@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}
+    {{super()}} | My Group
+{% endblock title %}
+
+{% block content %}
+    <div class="row justify-content-center mb-3">
+        <h3 class="title"> Your group</h3>
+        <h4 class="title">{{group[1]}}</h4>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12 col-lg-4">
+            <div class="card next-class">
+                <div class="card-header"><h6>Group Info</h6></div>
+                <div class="card-body">
+                    <p class="card-text"> Main classroom: {{group[2]}}</p>
+                    
+                    <p>subjetcs your group are taking</p>
+
+                </div>
+              </div>
+
+        </div>
+        <div class="col-12 col-lg-8">
+            <div class="table-responsive">
+                <table class="table table-dark table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col" colspan="3"><h5 class="title" style="color: aliceblue;">Students</h5></th>
+                    </tr>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Lastname</th>
+                    <th scope="col">Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for a in children %}
+                        <tr>
+                            <td>{{a[0]}}</td>
+                            <td>{{a[1]}}</td>
+                            <td>{{a[2]}}</td>
+                        </tr>
+                    {% endfor %}
+                  
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </div>
+    
+{% endblock content %}
