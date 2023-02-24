@@ -16,8 +16,8 @@
             <div class="card next-class" >
                 <div class="card-header"><h6>Your next Lesson</h6></div>
                 <div class="card-body">
-                  <h5 class="card-title">7A Maths</h5>
-                  <p class="card-text">{{next_classes[0]}}</p>
+                  <h4 class="card-title">7A Maths</h4>
+                  <p class="card-text">{{upcoming_class}}</p>
                   <p class="card-text"> Classroom: GO403</p>
                   <p class="card-text">Don't be late!</p>
                   
@@ -33,12 +33,12 @@
                   <h5 class="card-title">Feb 20 2023 to Feb 24 2023</h5>
                   <p class="card-text">this week you have:</p>
                   <div class="week-summary">
-                    <p >Lessons to instruct: 7</p>
-                    <p >Events created: 2</p>
-                    <p >Laboratories: 1</p>
-                    <p >assessments: 2</p>
-                    <p >isuued reports: 0</p>
-                    <p >issued announcements: 1</p>  
+                    <p >Lessons to instruct: {{lessons}}</p>
+                    <p >Events created: {{events}}</p>
+                    <p >Laboratories: {{laboratories}}</p>
+                    <p >assessments: {{assessments}}</p>
+                    <p >isuued reports: {{issued_reports}}</p>
+                    <p >issued announcements: {{issued_announcements}}</p>  
                   </div>    
                 </div>
                 <div class="card-footer" >

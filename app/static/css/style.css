@@ -166,11 +166,12 @@
 .next-class{
     background-color: #11ad77;
     color: #ffffff;
+    font-size: 1.35rem;
     height:100%;
     width: 100%;
 }
 .large-card{
-    background-color: #026869;
+    background-color: #026869; 
     color: #ffffff;
 }
 .large-card h5, .large-card h6{
@@ -188,7 +189,7 @@
     margin-top: 0.5rem;
 
 } 
-.next-class h6,.next-class h5{
+.next-class h6,.next-class h4{
     color: #ffffff;
     
     padding-bottom: 0;

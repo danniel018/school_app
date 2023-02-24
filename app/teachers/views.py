@@ -19,32 +19,57 @@ def home():
     today = date.today()
     week = today.isocalendar()[1]
 
-    week_classes = db.session.execute(" SELECT s.weekday_iso,s.start,s.end FROM "
+    schedule_classes = db.session.execute(" SELECT s.weekday_iso,s.start,s.end FROM "
         "schedule_subjects as s JOIN grades_subjects as g ON s.grade_subject_id = "
         "g.grade_subject_id WHERE g.teacher_id = :tid",{'tid':current_user.id})
     
-    week_classes  = QueriedData.return_rows(week_classes)
+    schedule_classes  = QueriedData.return_rows(schedule_classes)
 
-     
-    next_classes = []
-    for day in week_classes:
+    week_classes = []
+    for day in schedule_classes:
         daytime = datetime.fromisocalendar(today.year,week,day[0]) 
         #print(day[1])
         time_ = time.fromisoformat(day[1])
         #print(time_)
         daytime = daytime + timedelta(hours=time_.hour,minutes=time_.minute)
-        if daytime > datetime.now():
-            next_classes.append(daytime.strftime("%b %d %Y at %H:%M"))
+        week_classes.append(daytime)
 
-    next_classes = sorted(next_classes)       
+        # if daytime > datetime.now():
+        #     week_classes.append(daytime.strftime("%b %d %Y at %H:%M"))
 
+    week_classes = sorted(week_classes) 
+
+    next_classes = [x for x in week_classes if x > datetime.now()]
+
+    if len(next_classes) == 0:
+        upcoming_class = week_classes[0] + timedelta(weeks=1)
+    else:
+        upcoming_class = next_classes[0]
+
+    upcoming_class = upcoming_class.strftime("%b %d %Y at %H:%M")
+
+    announcements = db.session.execute("SELECT announcement_id,announcement_type FROM announcements WHERE "
+        "WEEK(date,3) = WEEK(CURRENT_DATE,3)")
+    announcements = QueriedData.return_rows(announcements)
+
+    laboratories = 0
+    assessments = 0
+    if len(announcements) > 0:
+        laboratories = len( [x for x in announcements if x[1] == 'announcement'])
+        assessments = len([x for x in announcements if x[1] == 'assessments'])
+
+    reports = db.session.execute("SELECT COUNT(report_id) FROM reports WHERE "
+        "WEEK(created_at,3) = WEEK(CURRENT_DATE,3)")
+    reports = QueriedData.return_one(reports)
+
+    lessons = len(schedule_classes)
+    events = len(announcements)
+    issued_announcements = len(announcements)
     
-        
 
-    
-
-
-    return render_template('teachers/home.html', teacher = teacher, next_classes = next_classes)
+    return render_template('teachers/home.html', teacher = teacher, upcoming_class = upcoming_class,
+        lessons = lessons, events = events, laboratories = laboratories, assessments = assessments,
+        issued_announcements = issued_announcements, issued_reports = reports)
 
 @teachers.route('/classes')
 @login_required
