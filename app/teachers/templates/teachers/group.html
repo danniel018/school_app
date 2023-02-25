@@ -11,13 +11,19 @@
 
     <div class="row mb-3">
         <div class="col-12 col-lg-4">
-            <div class="card next-class">
+            <div class="card my-group">
                 <div class="card-header"><h6>Group Info</h6></div>
                 <div class="card-body">
-                    <p class="card-text"> Main classroom: {{group[2]}}</p>
-                    
-                    <p>subjetcs your group are taking</p>
-
+                    <h6 class="title"> Main classroom: {{group[2]}}</h6> 
+                    <br>    
+                    <h6 class="title">subjetcs your group are taking</h6>
+                    {% for x in subjects  %}
+                        <div class="group-classes">   
+                            <p>Class: {{x[1]}}</p> 
+                            <p>Teacher: {{x[2]}} {{x[3]}}</p> 
+                        </div>
+                        
+                    {% endfor %}
                 </div>
               </div>
 

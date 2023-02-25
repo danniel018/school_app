@@ -88,7 +88,7 @@ def teacher_group():
     print(len(children))
     
 
-    subjects = db.session.execute("SELECT g.name,s.name,u.name FROM grade_groups as g "
+    subjects = db.session.execute("SELECT g.name,s.name,u.name,u.lastname FROM grade_groups as g "
                                   "JOIN grades_subjects as gs ON g.grade_group_id = "
                                   "gs.grade_group_id JOIN subjects as s ON gs.subject_id = "
                                   "s.subject_id JOIN users as u ON gs.teacher_id = "
@@ -98,9 +98,6 @@ def teacher_group():
 
     return render_template ('teachers/group.html',group = group, children = children,
                                 subjects = subjects)
-    
-
-
     
 
 

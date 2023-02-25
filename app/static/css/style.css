@@ -195,6 +195,22 @@
     padding-bottom: 0;
 }
 
+.my-group{
+    background-color: #da7420;
+    color: #ffffff;
+       
+}
+.my-group h6{
+    color: #ffffff;
+}
+.group-classes{
+    margin-bottom: 10px; 
+    border-radius: 25px;
+    border: solid white 1px;
+    padding: 0.5rem;
+       
+}
+
 .card-footer{
     color: white;
 }
