@@ -79,10 +79,14 @@ class GradesSubjectsSchema(Schema):
         ordered = True
     
     grade_subject_id = fields.Int(dump_only = True)
-    grade_group = fields.Nested(lambda: GradeGroupsSchema( only=('grade_group_id','name',)), dump_only = True) 
+    grade_group = fields.Nested(lambda: GradeGroupsSchema( 
+                    only=('grade_group_id','name','classroom')), dump_only = True)
+     
     subject = fields.Nested(lambda: SubjectsSchema( only=('name',)), dump_only = True) 
     teacher = fields.Nested(lambda: UsersSchema( only=('name','lastname')), dump_only = True)
     classroom = fields.String(dump_only = True)
+    schedule = fields.Nested(lambda: ScheduleSubjectsSchema( 
+                    only=('weekday','start','end'), many=True), dump_only = True) 
 
 
 class GradeGroupsSchema(Schema):
@@ -163,3 +167,19 @@ class ReportsSchema(Schema):
     
     created_at = fields.DateTime(dump_only = True)
     filename = fields.String(dump_only=True)
+
+class ScheduleSubjectsSchema(Schema):
+    class Meta:
+        ordered = True
+
+    schedule_subject_id = fields.Int(dump_only = True)
+    grade_subject_id = fields.Int(required = True)
+    grade_subject = fields.Nested(GradesSubjectsSchema(
+        only=('grade_group','subject')), dump_only = True)
+         
+    weekday = fields.String(required= True, 
+        validate=validate.OneOf(('M','TU','W','TH','F')))
+    weekday_iso = fields.Int(dump_only = True)
+    start = fields.String(validate=validate.Length(8), required = True)
+    end = fields.String(validate=validate.Length(8), required = True)
+

@@ -60,7 +60,6 @@ async function submit_data(class_,student){
 }
 
 async function load_reports (){
-    console.log('fuckyou Arsenal')
     let param = {'teacher':parseInt(document.getElementById('teacher').innerHTML)}
     
     let params = new URLSearchParams(param)

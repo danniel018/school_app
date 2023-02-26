@@ -9,7 +9,7 @@ from .parents.views import parents
 from .api.views import api
 from .database import db
 from .api.views import GroupGrades, Event, Grade, Teacherclasses, ClassChildren,\
-    AnnouncementsResource, AnnouncementResource, ReportsResource
+    AnnouncementsResource, AnnouncementResource, ReportsResource, Classes
     
 
 
@@ -39,6 +39,8 @@ def create_app():
     app_api.add_resource(AnnouncementsResource,'/announcements')
     app_api.add_resource(AnnouncementResource,'/announcements/<int:teacher_id>')
     app_api.add_resource(ReportsResource,'/reports')
+    app_api.add_resource(Classes,'/classes')
+
     
     app.register_blueprint(api) 
 

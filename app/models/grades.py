@@ -156,6 +156,8 @@ class GradesSubjects(db.Model):
     teacher = db.relationship('Users',back_populates = 'classes')
     classroom = db.Column(db.String(5), nullable = True) 
     reports = db.relationship('Reports',back_populates = 'grade_subject')
+    schedule = db.relationship('ScheduleSubjects',back_populates = 'grade_subject')
+
 
     @classmethod
     def by_id(cls,grade_subject):
@@ -234,4 +236,27 @@ class Reports(db.Model,DataBaseChanges):
     def get_by_teacher(cls,teacher):
         return cls.query.join(GradesSubjects)\
             .filter(GradesSubjects.teacher_id == teacher).all()
+
+
+class ScheduleSubjects(db.Model,DataBaseChanges):
+    __tablename__ = 'schedule_subjects'
+
+    schedule_subject_id = db.Column(INTEGER(unsigned=True),primary_key = True)
+
+    grade_subject_id = db.Column(INTEGER(unsigned=True),
+        db.ForeignKey('grades_subjects.grade_subject_id'),nullable=False)
+    grade_subject = db.relationship('GradesSubjects',back_populates = 'schedule')
+
+    weekday = db.Column(ENUM('M','TU','W','TH','F'))
+    weekday_iso = db.Column(TINYINT(),nullable = True)
+    start = db.Column(db.String(8),nullable = True)
+    end = db.Column(db.String(8),nullable = True)
+
+    @classmethod
+    def get_by_teacher(cls,teacher_id):
+        return cls.query.join(GradesSubjects)\
+            .filter(GradesSubjects.teacher_id == teacher_id).all()
+
+
+
         

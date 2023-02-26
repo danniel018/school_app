@@ -11,7 +11,8 @@ from sqlalchemy import func
 from marshmallow.validate import OneOf 
 from app.schemas.grades import GradesSchema,EventsSchema,\
     ChildrenSchema,GradesSubjectsSchema, AnnouncementsSchema, \
-        AnnouncementsChildrenSchema, ReportsSchema
+        AnnouncementsChildrenSchema, ReportsSchema, \
+        ScheduleSubjectsSchema
 
 from app.models.grades import Grades, Events,Children,GradesSubjects,\
     Announcements, childrenGradesGroups, AnnouncementsChildren, Reports
@@ -28,7 +29,7 @@ grades_schema = ChildrenSchema(many=True, exclude=('email','active'))
 #grades_schema.grades.dump_only ('event',#)
 event_schema = EventsSchema()
 grade_schema = GradesSchema()
-grades_subject_schemas = GradesSubjectsSchema(many=True)
+grades_subjects_schemas = GradesSubjectsSchema(many=True)
 announcements_schema = AnnouncementsSchema()
 
 class GroupGrades(Resource):
@@ -108,7 +109,7 @@ class Teacherclasses(Resource):
         #grades = Events.grades_by_group(subject_id)
         subjects = GradesSubjects.subjects_by_teacher(teacher_id)  
         
-        return grades_subject_schemas.dump(subjects),HTTPStatus.OK
+        return grades_subjects_schemas.dump(subjects),HTTPStatus.OK
 
 
 
@@ -226,3 +227,12 @@ class ReportsResource(Resource):
 
         return {'message':'Reporte generado!'},HTTPStatus.OK
         
+
+class Classes(Resource):
+
+    @use_kwargs({'teacher':fields.Int(missing = None)},location = 'query')
+    def get(self,teacher):
+        
+        if not teacher == None:
+            classes = GradesSubjects.subjects_by_teacher(teacher)
+            return grades_subjects_schemas.dump(classes), HTTPStatus.OK

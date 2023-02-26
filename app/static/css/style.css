@@ -215,6 +215,24 @@
     color: white;
 }
 
+.teacher-classes{
+    padding: 0.7rem;
+}
+
+.class-card{
+    display: inline-block;
+    background-color: #823aca;
+    color: #ffffff;
+    padding: 0.5rem;
+    border-radius: 12px;
+    margin: 0.5rem;
+    text-decoration: none;
+}
+.class-card h5, .class-card h6{
+    
+    color: #ffffff;
+    
+}
  .card-home .card{
      height: 19rem;
  }
