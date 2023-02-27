@@ -141,6 +141,31 @@ def class_info(grade_subject):
 
     no_added_events = False
 
+    today = date.today()
+    week = today.isocalendar()[1]
+    schedule_classes = db.session.execute("SELECT weekday,weekday_iso,start,end FROM schedule_subjects WHERE "
+            "grade_subject_id = :id ORDER BY weekday_iso",{'id':grade_subject})
+    schedule_classes = QueriedData.return_rows(schedule_classes)
+
+    week_classes = []
+    for day in schedule_classes:
+        daytime = datetime.fromisocalendar(today.year,week,day[1]) 
+        #print(day[1])
+        time_ = time.fromisoformat(day[2])
+        #print(time_)
+        daytime = daytime + timedelta(hours=time_.hour,minutes=time_.minute)
+        week_classes.append(daytime)
+
+    next_classes = [x for x in week_classes if x > datetime.now()]
+
+    if len(next_classes) == 0:
+        upcoming_class = week_classes[0] + timedelta(weeks=1)
+    else:
+        upcoming_class = next_classes[0]
+
+    upcoming_class = upcoming_class.strftime("%b %d %Y at %H:%M")
+
+
     students = db.session.execute("SELECT c.child_id,c.name, c.lastname FROM children as c JOIN children_grade_groups as "
         "cg ON c.child_id = cg.child_id JOIN grade_groups as gg ON cg.grade_group_id = gg.grade_group_id "
         "JOIN grades_subjects as gs ON gg.grade_group_id = gs.grade_group_id  WHERE gs.grade_subject_id = :id",{'id':grade_subject})
@@ -189,7 +214,7 @@ def class_info(grade_subject):
 
     return render_template('teachers/class_info.html',students = students, group= class_data[1], classs= class_data[2],
         events = events, week_events = week_events, exams = exams, labs = labs, nwe = no_week_events, grade_subject = grade_subject,
-        form = form, nae = no_added_events) 
+        form = form, nae = no_added_events, upcoming_class = upcoming_class) 
 
 @teachers.route('/classes/<int:grade_subject>/grades')
 @login_required

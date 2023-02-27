@@ -217,16 +217,23 @@
 
 .teacher-classes{
     padding: 0.7rem;
+    
+    
 }
 
 .class-card{
+    height: 50%;
     display: inline-block;
     background-color: #823aca;
     color: #ffffff;
-    padding: 0.5rem;
+    padding: 0.9rem;
+    margin: 0.8rem;
     border-radius: 12px;
-    margin: 0.5rem;
     text-decoration: none;
+    
+}
+.class-card:hover{
+    background-color: #9847ea;
 }
 .class-card h5, .class-card h6{
     
