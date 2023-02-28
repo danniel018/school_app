@@ -104,12 +104,16 @@ async function load_students(select,class_){
 async function validate_data(class_,student,parents,doc,small,all_parents_radio){
     
     if(!doc.value){
-        console.log('no file')
+        // console.log('no file')
         doc.style.borderColor = 'red'
         small.innerHTML = '*please attach a file'
     }
+    else if(doc.value && (doc.files[0].size/1024) > 2000){
+        alert('file is too heavy, please upload a file of  up to 2Mb size')
+    }
     else{
-        let reason = document.getElementById('reason_id')
+        // console.log('file ok')
+        let reason = document.getElementById('reason_id') 
         console.log(reason.value)
         const data = new FormData()
         data.append('file',doc.files[0])

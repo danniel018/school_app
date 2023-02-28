@@ -5,7 +5,7 @@ function load_grades(){
 }
 
 async function set_table(subject){
-    const res = await fetch('/api/grades/gradesubject/' + subject)
+    const res = await fetch('/api/grades/gradesubject/' + subject) 
     const data_response = await res.json()
 
     if (res.status !== 200){
@@ -17,7 +17,7 @@ async function set_table(subject){
         data_response[0].grades.forEach(column => {
             let event = document.createElement('th')
             event.setAttribute('scope','col')
-            event.innerHTML = column.event.name
+            event.innerHTML = `<a href='events/${column.event.event_id}'>${column.event.name}</a>` 
             header.appendChild(event)
         });
         let body = document.querySelector('tbody');
@@ -29,7 +29,7 @@ async function set_table(subject){
             let lastname = document.createElement('td')
             n.innerHTML = row
             name.innerHTML = student.name
-            lastname.innerHTML = `<a href='/students/${student.child_id}'>${student.lastname}</a>`
+            lastname.innerHTML = student.lastname
             tr.appendChild(n)
             tr.appendChild(lastname)
             tr.appendChild(name)

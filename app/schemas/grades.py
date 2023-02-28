@@ -7,7 +7,7 @@ class GradesSchema(Schema):
     
     grade_id = fields.Int(dump_only = True)
     event = fields.Nested(lambda: EventsSchema(), dump_only = True,
-        only=('name',)) 
+        only=('event_id','name',)) 
     #event_id = fields.Int(required = True)
     child_id = fields.Int(dump_only = True)
     child = fields.Nested(lambda : ChildrenSchema(),dump_only = True,

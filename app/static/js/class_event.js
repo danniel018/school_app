@@ -40,7 +40,7 @@ async function set_data(event_id){
             },false)
             n.innerHTML = row
             name.innerHTML = student.child.name
-            lastname.innerHTML = `<a href='/students/${student.child.child_id}'>${student.child.lastname}</a>` 
+            lastname.innerHTML = student.child.lastname 
             grade.appendChild(grade_btn)
             tr.appendChild(n)
             tr.appendChild(lastname)

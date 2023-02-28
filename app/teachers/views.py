@@ -18,6 +18,9 @@ def home():
 
     today = date.today()
     week = today.isocalendar()[1]
+    
+    monday = datetime.fromisocalendar(today.year,week,1).strftime("%b %d %Y")
+    friday = datetime.fromisocalendar(today.year,week,5).strftime("%b %d %Y") 
 
     schedule_classes = db.session.execute(" SELECT s.weekday_iso,s.start,s.end FROM "
         "schedule_subjects as s JOIN grades_subjects as g ON s.grade_subject_id = "
@@ -69,7 +72,7 @@ def home():
 
     return render_template('teachers/home.html', teacher = teacher, upcoming_class = upcoming_class,
         lessons = lessons, events = events, laboratories = laboratories, assessments = assessments,
-        issued_announcements = issued_announcements, issued_reports = reports)
+        issued_announcements = issued_announcements, issued_reports = reports, monday = monday, friday = friday)
 
 
 @teachers.route('/my-group')
