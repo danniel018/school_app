@@ -1,7 +1,8 @@
+import os
 from flask import Flask
 from flask_restful import Api
 from flask_login import LoginManager
-from .config import Config
+from app.config import Development, Production
 from .models1 import Userdata 
 from .auth import views
 from .teachers.views import teachers
@@ -12,6 +13,11 @@ from .api.views import GroupGrades, Event, Grade, Teacherclasses, ClassChildren,
     AnnouncementsResource, AnnouncementResource, ReportsResource, Classes
     
 
+env = os.environ.get('ENV', 'Development')
+if env == 'Production':
+    environment = Production()
+else:
+    environment = Development()
 
 login_manager = LoginManager()
 login_manager.login_message = ''
@@ -23,7 +29,7 @@ def load_user(id):
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(environment)
     db.init_app(app)
     app.register_blueprint(views.auth)
     app.register_blueprint(teachers)

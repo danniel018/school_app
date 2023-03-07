@@ -1,9 +1,11 @@
 from os import abort
-from flask import Blueprint ,make_response, render_template,flash,redirect,url_for,request,jsonify
+from flask import Blueprint ,make_response, render_template,\
+    flash,redirect,url_for,request,jsonify, current_app
 from flask_login import login_user, login_required, logout_user, current_user
 from datetime import date, timedelta, time, datetime
 from app.database import db, QueriedData
 from app.forms import Events
+#from .. import environment
 
 
 teachers = Blueprint('teachers',__name__, url_prefix='/teachers',template_folder='templates') 
@@ -12,6 +14,8 @@ teachers = Blueprint('teachers',__name__, url_prefix='/teachers',template_folder
 @login_required
 def home():
 
+    bucket = current_app.config['ANNOUNCEMENTS_BUCKET']
+    print(bucket)
     teacher = db.session.execute("SELECT name, lastname FROM users WHERE "
         "user_id = :uid",{'uid':current_user.id})
     teacher = QueriedData.return_row(teacher)

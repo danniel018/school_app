@@ -21,7 +21,7 @@ from app.database import db
 from ..teachers.views import teachers
 
 from ..excel.reports import ExcelReport 
-
+from .. import config 
 
 api = Blueprint('api',__name__, url_prefix='/api',template_folder='templates')
 #grades_schema = EventsSchema(many=True, only=('name','grades'))
@@ -125,6 +125,7 @@ class AnnouncementResource(Resource):
 class AnnouncementsResource(Resource):
     
     def post(self): 
+        bucket = config.ANNOUNCEMENTS_BUCKET
         try:
             file = request.files.get('file')
             reason = request.form.get('reason') 
