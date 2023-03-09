@@ -190,6 +190,7 @@ class Users(db.Model):
     email = db.Column(db.String(50),nullable = False, unique = True)
     password = db.Column(db.String(256),nullable = False)
     user_type = db.Column(ENUM('teacher','parent','student'))
+    bucket_name = db.Column(db.String(256),nullable = True)
     classes = db.relationship('GradesSubjects',back_populates = 'teacher')
     announcements = db.relationship('Announcements',back_populates = 'teacher')
 

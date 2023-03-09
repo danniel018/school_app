@@ -13,9 +13,7 @@ teachers = Blueprint('teachers',__name__, url_prefix='/teachers',template_folder
 @teachers.route('/home')
 @login_required
 def home():
-
-    bucket = current_app.config['ANNOUNCEMENTS_BUCKET']
-    print(bucket)
+    
     teacher = db.session.execute("SELECT name, lastname FROM users WHERE "
         "user_id = :uid",{'uid':current_user.id})
     teacher = QueriedData.return_row(teacher)

@@ -1,4 +1,4 @@
-from flask import Blueprint, request,flash, redirect, url_for, jsonify
+from flask import Blueprint, request,flash, redirect, url_for, current_app
 from flask_restful import Resource
 from flask_login import current_user
 from http import HTTPStatus
@@ -15,13 +15,13 @@ from app.schemas.grades import GradesSchema,EventsSchema,\
         ScheduleSubjectsSchema
 
 from app.models.grades import Grades, Events,Children,GradesSubjects,\
-    Announcements, childrenGradesGroups, AnnouncementsChildren, Reports
+    Announcements, childrenGradesGroups, AnnouncementsChildren, Reports, Users
 from app.database import db
 
 from ..teachers.views import teachers
 
 from ..excel.reports import ExcelReport 
-from .. import config 
+from ..gcp.files import CloudStorage
 
 api = Blueprint('api',__name__, url_prefix='/api',template_folder='templates')
 #grades_schema = EventsSchema(many=True, only=('name','grades'))
@@ -125,7 +125,9 @@ class AnnouncementResource(Resource):
 class AnnouncementsResource(Resource):
     
     def post(self): 
-        bucket = config.ANNOUNCEMENTS_BUCKET
+        storage_url = current_app.config['CLOUD_STORAGE_URL']
+        bucket = db.session.query(Users.bucket_name)\
+            .filter(Users.user_id == current_user.id).first()[0]
         try:
             file = request.files.get('file')
             reason = request.form.get('reason') 
@@ -133,7 +135,7 @@ class AnnouncementsResource(Resource):
                 raise ValueError
         
             new_announcement = Announcements(type = reason,date=date.today(),
-                    teacher_id=current_user.id,filelink=f'{file.filename}-cloudstorage.com') 
+                    teacher_id=current_user.id,filelink=f'{storage_url}{bucket}/announcements/{file.filename}') 
             db.session.add(new_announcement)
             new_announcement_id = db.session.query(func.last_insert_id()).first()[0]
 
@@ -150,10 +152,7 @@ class AnnouncementsResource(Resource):
                         announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
                         child_id =i.child_id,grede_group_id = x.grade_group_id)
                 
-                return {'message':'new announcement created'},HTTPStatus.CREATED 
-
-            else:
-                
+            else:   
                 grade_subject_id = int(request.form.get('class'))
                 
                 if not request.form.get('student'):
@@ -164,7 +163,6 @@ class AnnouncementsResource(Resource):
                         announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
                         child_id =x.child_id,grede_group_id = grade_group.grade_group_id)
 
-                    return {'message':'new announcement created'},HTTPStatus.CREATED 
 
                 else: 
                     child_id = int(request.form.get('student'))
@@ -173,22 +171,19 @@ class AnnouncementsResource(Resource):
                     announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
                         child_id =child.child_id,grade_group_id = child.grade_group_id)
 
-                    return {'message':'new announcement created'},HTTPStatus.CREATED 
 
-
-            #UPLOAD FILE TO CLOUD STORAGE SERVER
-            #UPLOAD FILE TO CLOUD STORAGE SERVER
-            #UPLOAD FILE TO CLOUD STORAGE SERVER
-            
+            file_to_cloud = CloudStorage(bucket)  
+            file_to_cloud.upload_files(file,file.filename)      
             db.session.add(announcement_children) 
             db.session.commit()
 
+            return {'message':'new announcement created'},HTTPStatus.CREATED 
+        
         except (ValueError,AttributeError) as e:
                 print(e)
                 db.session.rollback()
                 return {'message':'wrong data values or keys'},HTTPStatus.BAD_REQUEST
 
-        return redirect(url_for('teachers.announcements'))
         
 class ReportsResource(Resource):
 
@@ -203,9 +198,14 @@ class ReportsResource(Resource):
             return reports_schema.dump(report_list),HTTPStatus.OK
     
     def post(self):
+        bucket = db.session.query(Users.bucket_name)\
+            .filter(Users.user_id == current_user.id).first()[0]
+        report_date = date.today().strftime("%b%d%Y-%H%M")
+
         reports_schema = ReportsSchema()
         report = request.get_json()
         print(report)
+        
         try:
             new_report = reports_schema.load(data = report)
 
@@ -217,14 +217,15 @@ class ReportsResource(Resource):
 
         subject_info = GradesSubjects.by_id(report['grade_subject_id'])
         child = Children.by_id(report['child_id'])
-
-        file = ExcelReport(child,subject_info)
+        filename = f'{child.name}-{child.lastame}-report-{report_date}.xlsx'
+        
+        file = ExcelReport(child,subject_info,filename,bucket_name = bucket)
         file.average()
         file.generate_report() 
 
-        #new = Reports(**new_report)
-        #new.filename = 'carcassbadasssong.xlsx'
-        #new.save()
+        new = Reports(**new_report)
+        new.filename = filename
+        new.save()
 
         return {'message':'Reporte generado!'},HTTPStatus.OK
         

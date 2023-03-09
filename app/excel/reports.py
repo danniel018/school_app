@@ -5,12 +5,23 @@ from openpyxl.utils import get_column_letter
 from io import BytesIO
 import urllib.request
 from datetime import datetime, date
-
+from flask import current_app
 from ..models.grades import Children,Grades
+from ..gcp.files import CloudStorage
+from .. import env
+
+
+if env == 'Development':
+    wb = load_workbook('C:/Users/danie/PycharmProjects/school_app/report_format.xlsx')
+else:
+    url = current_app.config['REPORTS_FORMAT']
+    file = urllib.request.urlopen(url).read()
+    wb = load_workbook(filename = BytesIO(file),data_only=True)
+      
 
 class ExcelReport:
-    #wb = load_workbook(filename = BytesIO(file),data_only=True)
-    wb = load_workbook('C:/Users/danie/PycharmProjects/school_app/report_format.xlsx')
+
+    #wb = load_workbook('C:/Users/danie/PycharmProjects/school_app/report_format.xlsx')
     ws = wb.active
     #ws.merge_cells()
     student_name_box = 'B2'
@@ -26,7 +37,7 @@ class ExcelReport:
     
 
 
-    def __init__(self,student,subject):
+    def __init__(self,student,subject,filename,bucket_name = None):
 
         self.student_name = student.name
         self.student_lastname = student.lastname
@@ -35,6 +46,8 @@ class ExcelReport:
         self.subject = f'{subject.grade_group.name} {subject.subject.name}'
         self.subject_id = subject.grade_subject_id
         self.bimester = '1'
+        self.filename = filename
+        self.bucket_name = bucket_name
         self.date = date.today()
 
     def average(self):
@@ -101,7 +114,10 @@ class ExcelReport:
         self.ws[self.teacher_box] = self.teacher
         self.ws[self.bimester_box] = self.bimester
 
-        self.wb.save('fucking_report.xlsx')
+        upload_file = CloudStorage(self.bucket_name)
+        file = BytesIO()
+        self.wb.save(file)
+        upload_file.upload_files(file,self.filename,generated=True)
             
     # notes = [88,85.3,75,77.6,79.34,81.43,88.5,92,92.6,96.24,83,85.6,80.04,
     #     74,81.4,83.56,90.04,86.87,79.8,88.56]
