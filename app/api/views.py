@@ -16,7 +16,7 @@ from app.schemas.grades import GradesSchema,EventsSchema,\
 
 from app.models.grades import Grades, Events,Children,GradesSubjects,\
     Announcements, childrenGradesGroups, AnnouncementsChildren, Reports, Users
-from app.database import db
+from app.database import db, QueriedData
 
 from ..teachers.views import teachers
 
@@ -116,8 +116,8 @@ class Teacherclasses(Resource):
 class AnnouncementResource(Resource):
     
     def get(self,teacher_id):
-        announcements_children_schema = AnnouncementsChildrenSchema(many=True)
-        announcements_list = AnnouncementsChildren.get_by_teacher(teacher_id) 
+        announcements_children_schema = AnnouncementsSchema(many=True)
+        announcements_list = Announcements.get_by_teacher(teacher_id) 
         print(announcements_list)
 
         return announcements_children_schema.dump(announcements_list), HTTPStatus.OK
@@ -133,11 +133,13 @@ class AnnouncementsResource(Resource):
             reason = request.form.get('reason') 
             if str(reason) != 'announcement' and str(reason) != 'summons':
                 raise ValueError
-        
-            new_announcement = Announcements(type = reason,date=date.today(),
-                    teacher_id=current_user.id,filelink=f'{storage_url}{bucket}/announcements/{file.filename}') 
+            
+            new_announcement = Announcements(announcement_type = reason,date=date.today(),
+                    teacher_id=current_user.id) 
             db.session.add(new_announcement)
             new_announcement_id = db.session.query(func.last_insert_id()).first()[0]
+            filename = f'announcements/{str(new_announcement_id)}-{file.filename}'
+            new_announcement.filelink = f'{storage_url}{bucket}/{filename}' 
 
             if not request.form.get('class'):
                 
@@ -151,6 +153,8 @@ class AnnouncementsResource(Resource):
                             'child_id: ',i.child_id,'group_id: ',x.grade_group_id)
                         announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
                         child_id =i.child_id,grede_group_id = x.grade_group_id)
+                        db.session.add(announcement_children)
+
                 
             else:   
                 grade_subject_id = int(request.form.get('class'))
@@ -161,7 +165,8 @@ class AnnouncementsResource(Resource):
                     for x in children:
                         print('ann_id: ',new_announcement_id,'child: ',x.child_id,'group: ',grade_group.grade_group_id)
                         announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
-                        child_id =x.child_id,grede_group_id = grade_group.grade_group_id)
+                        child_id =x.child_id,grade_group_id = grade_group.grade_group_id)
+                        db.session.add(announcement_children)
 
 
                 else: 
@@ -170,11 +175,12 @@ class AnnouncementsResource(Resource):
                     print('ann_id: ',new_announcement_id,'child: ',child.child_id,'group: ',child.grade_group_id)
                     announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
                         child_id =child.child_id,grade_group_id = child.grade_group_id)
+                    db.session.add(announcement_children) 
+
 
 
             file_to_cloud = CloudStorage(bucket)  
-            file_to_cloud.upload_files(file,file.filename)      
-            db.session.add(announcement_children) 
+            file_to_cloud.upload_files(file,filename)      
             db.session.commit()
 
             return {'message':'new announcement created'},HTTPStatus.CREATED 
@@ -184,7 +190,11 @@ class AnnouncementsResource(Resource):
                 db.session.rollback()
                 return {'message':'wrong data values or keys'},HTTPStatus.BAD_REQUEST
 
-        
+        except Exception as e:
+                print(e)
+                db.session.rollback()
+                return {'message':'wrong data values or keys'},HTTPStatus.INTERNAL_SERVER_ERROR
+
 class ReportsResource(Resource):
 
     @use_kwargs({'teacher':fields.Int(missing = None)},location = 'query')
@@ -198,8 +208,10 @@ class ReportsResource(Resource):
             return reports_schema.dump(report_list),HTTPStatus.OK
     
     def post(self):
+        storage_url = current_app.config['CLOUD_STORAGE_URL']
         bucket = db.session.query(Users.bucket_name)\
             .filter(Users.user_id == current_user.id).first()[0]
+        
         report_date = date.today().strftime("%b%d%Y-%H%M")
 
         reports_schema = ReportsSchema()
@@ -217,17 +229,22 @@ class ReportsResource(Resource):
 
         subject_info = GradesSubjects.by_id(report['grade_subject_id'])
         child = Children.by_id(report['child_id'])
-        filename = f'{child.name}-{child.lastame}-report-{report_date}.xlsx'
+        new_report_id = db.session.execute("SELECT IFNULL(MAX(report_id),0) "
+                            "FROM reports")
+        new_report_id=QueriedData.return_one(new_report_id)
+
+        filename = f'reports/{child.name}-{child.lastname}-report-{str(new_report_id + 1)}.xlsx'
         
         file = ExcelReport(child,subject_info,filename,bucket_name = bucket)
         file.average()
         file.generate_report() 
 
         new = Reports(**new_report)
-        new.filename = filename
+        print(f'{storage_url}{bucket}{filename}') 
+        new.filelink = f'{storage_url}{bucket}/{filename}'
         new.save()
 
-        return {'message':'Reporte generado!'},HTTPStatus.OK
+        return {'message':'Reporte generado!'},HTTPStatus.CREATED 
         
 
 class Classes(Resource):

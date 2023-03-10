@@ -3,8 +3,10 @@ from flask import Blueprint ,make_response, render_template,\
     flash,redirect,url_for,request,jsonify, current_app
 from flask_login import login_user, login_required, logout_user, current_user
 from datetime import date, timedelta, time, datetime
+from sqlalchemy import func
 from app.database import db, QueriedData
 from app.forms import Events
+from ..models.grades import Users, Reports
 #from .. import environment
 
 
@@ -13,7 +15,10 @@ teachers = Blueprint('teachers',__name__, url_prefix='/teachers',template_folder
 @teachers.route('/home')
 @login_required
 def home():
-    
+    new_report_id = db.session.execute("SELECT IFNULL(MAX(report_id),0) "
+                            "FROM reports")
+    new_report_id=QueriedData.return_one(new_report_id)
+    print(new_report_id + 1)
     teacher = db.session.execute("SELECT name, lastname FROM users WHERE "
         "user_id = :uid",{'uid':current_user.id})
     teacher = QueriedData.return_row(teacher)
@@ -57,18 +62,22 @@ def home():
         "WEEK(date,3) = WEEK(CURRENT_DATE,3)")
     announcements = QueriedData.return_rows(announcements)
 
+    events = db.session.execute("SELECT event_id,event_type FROM class_events WHERE "
+        "WEEK(date,3) = WEEK(CURRENT_DATE,3)")
+    events = QueriedData.return_rows(events)
+
     laboratories = 0
     assessments = 0
-    if len(announcements) > 0:
-        laboratories = len( [x for x in announcements if x[1] == 'announcement'])
-        assessments = len([x for x in announcements if x[1] == 'assessments'])
+    if len(events) > 0:
+        laboratories = len( [x for x in events if x[1] == 'laboratory'])
+        assessments = len([x for x in events if x[1] == 'exam'])
 
     reports = db.session.execute("SELECT COUNT(report_id) FROM reports WHERE "
         "WEEK(created_at,3) = WEEK(CURRENT_DATE,3)")
     reports = QueriedData.return_one(reports)
 
     lessons = len(schedule_classes)
-    events = len(announcements)
+    events = len(events)
     issued_announcements = len(announcements)
     
 
@@ -292,6 +301,8 @@ def announcement(announcement_id):
     announcement_data = db.session.execute("SELECT * FROM announcements WHERE "
         "announcement_id = :aid",{'aid':announcement_id})
     announcement_data = QueriedData.return_row(announcement_data)
+    filename = announcement_data[4].split('nts/')
+    print(filename[1]) 
  
     announcement_children = db.session.execute("SELECT g.name, c.name, c.lastname FROM "
         "announcements_children as a JOIN grade_groups as g ON a.grade_group_id = "
@@ -299,11 +310,12 @@ def announcement(announcement_id):
         "a.announcement_id = :aid",{'aid':announcement_id})
 
     announcement_children = QueriedData.return_rows(announcement_children)
+    print(len(announcement_children))
     
 
     
     return render_template('teachers/announcement.html',announcement = announcement_data,
-        children = announcement_children)
+        children = announcement_children, filename = filename[1])
 
 
 @teachers.route('/reports')

@@ -136,7 +136,8 @@ class AnnouncementsChildrenSchema(Schema):
     grade_group_id = fields.Int(dump_only = True)
     announcement = fields.Nested(lambda:AnnouncementsSchema())
     child = fields.Nested(ChildrenSchema(only = ('name','lastname')))
-    grade_group = fields.Nested(GradeGroupsSchema(only = ('grade_group_id','name')))
+    grade_group = fields.Nested(GradeGroupsSchema(
+        only = ('grade_group_id','name')),dump_only = True)
 
 
 class AnnouncementsSchema(Schema):
@@ -149,7 +150,11 @@ class AnnouncementsSchema(Schema):
     date = fields.Date(required=True)
     teacher_id = fields.Int(required = True)
     teacher = fields.Nested(lambda: UsersSchema( only=('name','lastname')), dump_only = True)
+    announcement_children = fields.Nested(lambda: AnnouncementsChildrenSchema(
+        only = ('child','grade_group'),many=True
+    ))
     filelink = fields.String(required=True,validate=validate.Length(max=256))
+    
 
 
 class ReportsSchema(Schema):
@@ -166,7 +171,7 @@ class ReportsSchema(Schema):
         only=('name','lastname')), dump_only = True)
     
     created_at = fields.DateTime(dump_only = True)
-    filename = fields.String(dump_only=True)
+    filelink = fields.String(dump_only=True)
 
 class ScheduleSubjectsSchema(Schema):
     class Meta:

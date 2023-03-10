@@ -8,19 +8,19 @@ from datetime import datetime, date
 from flask import current_app
 from ..models.grades import Children,Grades
 from ..gcp.files import CloudStorage
-from .. import env
+#from .. import env
 
 
-if env == 'Development':
-    wb = load_workbook('C:/Users/danie/PycharmProjects/school_app/report_format.xlsx')
-else:
-    url = current_app.config['REPORTS_FORMAT']
-    file = urllib.request.urlopen(url).read()
-    wb = load_workbook(filename = BytesIO(file),data_only=True)
-      
+# if env == 'Development':
+#     wb = load_workbook('C:/Users/danie/PycharmProjects/school_app/report_format.xlsx')
+# else:
+
+    
 
 class ExcelReport:
-
+    url = "https://storage.googleapis.com/school-c1tr978lv-files-format/report_format.xlsx"
+    file = urllib.request.urlopen(url).read()
+    wb = load_workbook(filename = BytesIO(file),data_only=True)
     #wb = load_workbook('C:/Users/danie/PycharmProjects/school_app/report_format.xlsx')
     ws = wb.active
     #ws.merge_cells()
@@ -51,7 +51,7 @@ class ExcelReport:
         self.date = date.today()
 
     def average(self):
-
+        print(self.filename)
         grades = Grades.by_class_student(self.student_id,self.subject_id)
         
         current_grades = [grade for grade in grades if not grade.grade == None]

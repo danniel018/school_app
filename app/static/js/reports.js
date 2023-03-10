@@ -39,6 +39,8 @@ async function submit_data(class_,student){
     data={grade_subject_id:parseInt (class_),
         child_id:parseInt(student)}
    
+    btn.disabled = true
+    btn.innerHTML = 'Generating...'
     const post = await fetch('/api/reports',
         {method:'POST',
             headers:{'Content-Type':'application/json'},
@@ -47,7 +49,7 @@ async function submit_data(class_,student){
     )
     const response = await post.json() 
 
-    if (post.status === 200){ 
+    if (post.status === 201){ 
         window.scrollTo({top: 0,behavior:'smooth'})
         alert_section.hidden = false
         alert_text.innerHTML = response.message
@@ -55,6 +57,7 @@ async function submit_data(class_,student){
     }
     else {
         alert('error al generar reporte')
+        location.reload()
     }
     
 }
@@ -70,16 +73,16 @@ async function load_reports (){
     }
     else {
         const reports_section = document.getElementsByClassName('current-reports')[0]
-        let index = 1
-        reports_response.forEach(report => {
+        reports_response.forEach((report,index) => {
             let element = document.createElement('div')
+            let filename = report.filelink.split('reports/')[1]
             element.className = 'new_report'
-            element.innerHTML = `<h6 class = "announcements_list_inner">${index}. 
+            element.innerHTML = `<h6 class = "announcements_list_inner">${index + 1}. 
                 Report on: ${report.child.name} ${report.child.lastname}</h6>
                 <p class = "announcements_list_inner"> 
                     class: ${report.grade_subject.grade_group.name} ${report.grade_subject.subject.name}</p> 
                     <p class = "announcements_list_inner">Date: ${report.created_at}</p>
-                <a href="/teachers/announcement/${report.filename}" class = "announcements_list_inner">${report.filename}</a>`
+                <a href="${report.filelink}" class = "announcements_list_inner" target="_blank">${filename}</a>`
                 
             reports_section.appendChild(element)
         });

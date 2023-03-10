@@ -9,8 +9,8 @@ gcs_scope = 'https://www.googleapis.com/auth/devstorage.read_write '\
     'https://www.googleapis.com/auth/devstorage.full_control '\
     
 
-key_file = current_app.config['SERVICE_ACCOUNT_KEY']
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = key_file
+key_file = 'school-app-23-bffdfb87a451.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = key_file 
 
 class CloudStorage:
     def __init__(self,bucket = None):

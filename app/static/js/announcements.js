@@ -16,17 +16,18 @@ async function load_info(){
     }
     else {
         const announcements_section = document.getElementsByClassName('announcements_list')[0]
-        let index = 1
-        announcements_response.forEach(child => {
-            let element = document.createElement('div')
-            element.innerHTML = `<h6 class = "announcements_list_inner">${index}. ${child.announcement.announcement_type}</h6>
-                <p class = "announcements_list_inner"> date of issue: ${child.announcement.date}</p> <p class = "announcements_list_inner">Group or groups(fix): ${child.grade_group.name}</p>
-                <a href="/teachers/announcement/${child.announcement.announcement_id}" class = "announcements_list_inner">more info</a>`
+        //let index = 1 
+        announcements_response.forEach((announcement,index) => {
+            let element = document.createElement('div') 
+            element.className = 'mb-4'
+            element.innerHTML = `<h6 class = "announcements_list_inner">${index + 1}. ${announcement.announcement_type}</h6> 
+                <p class = "announcements_list_inner"> date of issue: ${announcement.date}</p> 
+                <a href="/teachers/announcement/${announcement.announcement_id}" class = "announcements_list_inner">more info</a>`
                 
             announcements_section.appendChild(element)
-        });
+        }); 
 
-    }
+    } 
     const res = await fetch('/api/teachers/groups/' + teacher)
     const data_response = await res.json()
     if (res.status !== 200){
@@ -101,7 +102,7 @@ async function load_students(select,class_){
     }
 }
 
-async function validate_data(class_,student,parents,doc,small,all_parents_radio){
+async function validate_data(class_,student,parents,doc,small,all_parents_radio){ 
     
     if(!doc.value){
         // console.log('no file')
@@ -130,15 +131,18 @@ async function validate_data(class_,student,parents,doc,small,all_parents_radio)
                 
         }
         for (var pair of data.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]); 
+            console.log(pair[0]+ ', ' + pair[1]);  
         }
-        const res = await fetch('/api/announcements',{ 
+        const res = await fetch('/api/announcements',{  
             method:'POST',
             body:data,
         })
         const data_response = await res.json()
-        console.log(res.status)
-        console.log(data_response.message)
+        res.status == 201? alert('Announcement successfully generated!'):
+        alert('there was an error generating the report :(')
+        location.reload()
+        // console.log(res.status)
+        // console.log(data_response.message)
 
     }
     
