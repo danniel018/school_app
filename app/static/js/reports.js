@@ -56,7 +56,7 @@ async function submit_data(class_,student){
         setTimeout(()=>{location.reload()}, 2500)
     }
     else {
-        alert('error al generar reporte')
+        alert('there was an error generating the report :(')
         location.reload()
     }
     

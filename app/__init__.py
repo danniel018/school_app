@@ -1,7 +1,7 @@
 import os
-from flask import Flask
+from flask import Flask, redirect
 from flask_restful import Api
-from flask_login import LoginManager
+from flask_login import LoginManager, login_required
 from app.config import Development, Production
 from .models1 import Userdata 
 from .auth import views
@@ -34,7 +34,7 @@ def create_app():
     app.register_blueprint(views.auth)
     app.register_blueprint(teachers)
     app.register_blueprint(parents)
-    
+
     login_manager.init_app(app)
     app_api = Api(api)
     app_api.add_resource(GroupGrades,'/grades/gradesubject/<int:subject_id>')

@@ -14,8 +14,8 @@
     </div>
 
     <div class="row mt-4">
-        <div class="col-4">
-            <div class="card text-white bg-success mb-3" style="max-width: 18rem; background-color: rgb(141, 89, 171)  !important;">
+        <div class="col-12 col-lg-4">
+            <div class="card text-white bg-success mb-3" style="width: 100%; background-color: rgb(141, 89, 171)  !important;">
               <div class="card-header">Next class</div>
               <div class="card-body">
                 <h4 class="card-title">{{upcoming_class}} </h4>
@@ -25,10 +25,9 @@
                 <br>
               </div>
             </div>
-            <button class="btn btn-success btn-lg" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">New Event +</button>
         </div>
-          <div class="col-4">
-            <div class="card text-white bg-success mb-3" style="max-width: 18rem; background-color: rgb(181, 68, 152)  !important;">
+          <div class="col-12 col-lg-4">
+            <div class="card text-white bg-success mb-3" style="width: 100%; background-color: rgb(181, 68, 152)  !important;">
               <div class="card-header">Last added Event</div>
               <div class="card-body">
                 {% if nae %}
@@ -44,9 +43,9 @@
             
         </div>
         
-        <div class="col-4">
+        <div class="col-12 col-lg-4">
           
-            <div class="card text-white bg-success mb-3" style="max-width: 22rem; background-color: rgb(220, 165, 36)  !important;">
+            <div class="card text-white bg-success mb-3" style="width: 100%; background-color: rgb(220, 165, 36)  !important;">
               <div class="card-header"><h4>Week Events</h3></div>
               <div class="card-body">
                 {% if nwe %}
@@ -69,9 +68,13 @@
               </div>
             </div>
         </div>
+        <div class="col-12">
+          <button class="btn btn-success btn-lg" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">New Event +</button>
+
+        </div>
     </div>
-    <div class="row mt-4">
-      <div class="col-5">
+    <div class="row justify-content-between mt-4">
+      <div class="col-12 col-lg-5">
         <h3>Exams</h3>
         <div class="table-responsive">
             <table class="table table-dark table-sm">
@@ -96,7 +99,7 @@
           </table>
         </div>
       </div>
-      <div class="col-5 offset-2">
+      <div class="col-12 col-lg-5">
         <h3>Laboratories</h3>
         <div class="table-responsive">
             <table class="table table-dark table-sm">
@@ -121,8 +124,8 @@
         </div>
       </div>
   </div>
-  <div class="row mt-4">
-    <div class="col-5">
+  <div class="row justify-content-between mt-4">
+    <div class="col-12 col-lg-5">
       <div class="accordion" id="accordionExample">
         <div class="accordion-item">
           <h2 class="accordion-header" id="headingOne">
@@ -144,7 +147,7 @@
         </div>
     </div> 
     </div>
-    <div class="col-5 offset-2">
+    <div class="col-12 col-lg-5">
       <div class="d-grid gap-2">
         <a href="{{url_for('teachers.grades',grade_subject=grade_subject)}}" class="btn btn-success">Class Grades <i class="bi bi-mortarboard"></i></a>
         <!-- <button class="btn btn-success">Class Grades <i class="bi bi-mortarboard"></i></button> -->

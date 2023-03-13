@@ -55,8 +55,9 @@ async function load_info(){
         radio_form(0)
     },false)
 
-    document.getElementById('submit_data').addEventListener('click',()=> {
-        validate_data(class_select,select_student,parents,doc,small,radio1)
+    let submit_btn = document.getElementById('submit_data')
+    submit_btn.addEventListener('click',function() {
+        validate_data(class_select,select_student,parents,doc,small,radio1,this)
     })
 }
 
@@ -102,48 +103,55 @@ async function load_students(select,class_){
     }
 }
 
-async function validate_data(class_,student,parents,doc,small,all_parents_radio){ 
+async function validate_data(class_,student,parents,doc,small,all_parents_radio,submit){ 
     
     if(!doc.value){
         // console.log('no file')
         doc.style.borderColor = 'red'
         small.innerHTML = '*please attach a file'
+        return
     }
     else if(doc.value && (doc.files[0].size/1024) > 2000){
         alert('file is too heavy, please upload a file of  up to 2Mb size')
+        return
     }
-    else{
-        // console.log('file ok')
-        let reason = document.getElementById('reason_id') 
-        console.log(reason.value)
-        const data = new FormData()
-        data.append('file',doc.files[0])
-        data.append('reason',reason.value)
+    if (parseInt(class_.value) == 0 && !all_parents_radio.checked ){
+        alert ('please Select a class!')
+        return
+    }
+    submit.innerHTML = 'Generating...'
+    submit.disabled = true
+    console.log('request sent')
+    let reason = document.getElementById('reason_id') 
+    console.log(reason.value)
+    const data = new FormData()
+    data.append('file',doc.files[0])
+    data.append('reason',reason.value)
+        
+    if (!all_parents_radio.checked){
             
-        if (!all_parents_radio.checked){
-                
-            let grade_subject = class_.value
-            data.append('class',grade_subject)
+        let grade_subject = class_.value
+        data.append('class',grade_subject)
 
-            if (parseInt(parents.value) == 2){
-                data.append('student',student.value)
-            }
-                
+        if (parseInt(parents.value) == 2){
+            data.append('student',student.value)
         }
-        for (var pair of data.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]);  
-        }
-        const res = await fetch('/api/announcements',{  
-            method:'POST',
-            body:data,
-        })
-        const data_response = await res.json()
-        res.status == 201? alert('Announcement successfully generated!'):
-        alert('there was an error generating the report :(')
-        location.reload()
-        // console.log(res.status)
-        // console.log(data_response.message)
-
+            
     }
+    for (var pair of data.entries()) {
+        console.log(pair[0]+ ', ' + pair[1]);  
+    }
+    const res = await fetch('/api/announcements',{  
+        method:'POST',
+        body:data,
+    })
+    const data_response = await res.json()
+    res.status == 201? alert('Announcement successfully generated!'):
+    alert('there was an error generating the announcement :(')
+    location.reload()
+    // console.log(res.status)
+    // console.log(data_response.message)
+
+    
     
 }
