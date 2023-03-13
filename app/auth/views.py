@@ -1,45 +1,51 @@
-from flask import Blueprint ,make_response, render_template,flash,redirect,url_for,request,jsonify
+from flask import Blueprint,render_template,flash,redirect,url_for,current_app
 from flask_login import login_user, login_required, logout_user, current_user
 
 from app.forms import New_user, Login 
 from werkzeug.security import generate_password_hash,check_password_hash
-from app.database import Database
-from app.config import Access_code
+
 from app.models1 import Userdata
-from app.database import db
+from app.database import db, QueriedData
 auth = Blueprint('auth',__name__, url_prefix='/auth',template_folder='templates') 
 
-@auth.route('/signup',methods=['GET','POST'])
-def signup():
+# @auth.route('/signup',methods=['GET','POST']) 
+# def signup():
     
-    if current_user.is_authenticated: 
-        return redirect(url_for('parents.home'))
+#     if current_user.is_authenticated: 
+#         return redirect(url_for('parents.home'))
 
-    form = New_user()
-    #database = Database()
+#     form = New_user()
+#     #database = Database()
 
-    if form.add_user.data and form.validate():
-        hashed_password = generate_password_hash(form.password.data,'sha256')
-        try:
-            db.session.execute("INSERT INTO users (name,lastname,email,password,user_type) VALUES (%s,%s,%s,%s,%s)",
-                [form.name.data,form.lastname.data,form.email.data,hashed_password,'teacher'])
-            db.session.commit()
-            flash("User signed up",category='success')
-            return redirect(url_for('auth.login'))
+#     if form.add_user.data and form.validate():
+#         hashed_password = generate_password_hash(form.password.data,'sha256')
+#         try:
+#             bucket = current_app.config['TEACHERS_BUCKET']
+#             db.session.execute("INSERT INTO users (name,lastname,email,password,user_type) "
+#                         "VALUES (:nam, :last, :email, :pass, :ut)",
+#                         {'nam':form.name.data,'last':form.lastname.data,'email':form.email.data,
+#                                 'pass':hashed_password,'ut':'teacher'})
+#             new_user = db.session.execute("SELECT LAST_INSERT_ID()")
+#             new_user = QueriedData.return_one(new_user)
+#             db.session.execute("UPDATE users SET bucket_name = :bucket WHERE "
+#                                "user_id = :uid",{'bucket':f'{bucket}{str(new_user)}','uid':new_user})
+#             db.session.commit()
+#             flash("User signed up",category='success')
+#             return redirect(url_for('auth.login'))
 
-        except Exception as e:
-            print(e)
-            db.session.rollback()
-            flash("error",category='danger')
-            return redirect(url_for('auth.signup'))    
+#         except Exception as e:
+#             print(e)
+#             db.session.rollback()
+#             flash("error",category='danger')
+#             return redirect(url_for('auth.signup'))    
         
 
-    return render_template('auth/signup.html',form=form)
+#     return render_template('auth/signup.html',form=form)
 
 @auth.route('/login',methods=['GET','POST'])
 def login():
-    # if current_user.is_authenticated:
-    #     return redirect(url_for('warriors.warriors_home'))
+    if current_user.is_authenticated:
+        return redirect(url_for('teachers.home'))
     form = Login()
     #database = Database()
 
