@@ -20,7 +20,7 @@ class New_user(Users):
     add_user = SubmitField("Sign Up")    
 
 class Login(Users):
-    log_in = SubmitField("Ingresar")
+    log_in = SubmitField("Log in")
 
 class Events(FlaskForm):
     event_type = SelectField("Event type*", choices=[('Assignment'),('Exam'),

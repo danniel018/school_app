@@ -89,8 +89,8 @@ def home():
 @teachers.route('/my-group')
 @login_required
 def teacher_group():
-    year=2022
-    group = db.session.execute("SELECT grade_group_id,name,classroom FROM "
+    year=2023
+    group = db.session.execute("SELECT grade_group_id,name,classroom FROM " 
         "grade_groups WHERE director_id = :did AND year = :year",
         {'did':current_user.id,'year':year})
     group = QueriedData.return_row(group)
@@ -322,13 +322,13 @@ def announcement(announcement_id):
 @login_required
 def reports():
 
-    year = 2022
+    year = 2023
     classes = db.session.execute("SELECT gp.name,s.name,gp.grade_group_id,gs.grade_subject_id FROM "
         "grade_groups as gp JOIN grades_subjects as gs "
         "ON gp.grade_group_id = gs.grade_group_id JOIN subjects as s ON s.subject_id = gs "
         ".subject_id WHERE gs.teacher_id = :id AND gp.year = :year",{'id':current_user.id,'year':year})
 
-    classes = QueriedData.return_rows(classes)
+    classes = QueriedData.return_rows(classes) 
 
     
     return render_template('teachers/reports.html', classes = classes)
