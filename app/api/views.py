@@ -9,13 +9,13 @@ from webargs import fields
 from webargs.flaskparser import use_kwargs
 from sqlalchemy import func
 from marshmallow.validate import OneOf 
-from app.schemas.grades import GradesSchema,EventsSchema,\
+from app.schemas.schemas import GradesSchema,EventsSchema,\
     ChildrenSchema,GradesSubjectsSchema, AnnouncementsSchema, \
         AnnouncementsChildrenSchema, ReportsSchema, \
         ScheduleSubjectsSchema
 
-from app.models.grades import Grades, Events,Children,GradesSubjects,\
-    Announcements, childrenGradesGroups, AnnouncementsChildren, Reports, Users
+from app.models.models import Grades, Events,Children,GradesSubjects,\
+    Announcements, childrenGradesGroups, AnnouncementsChildren, Reports, Users 
 from app.database import db, QueriedData
 
 from ..teachers.views import teachers
@@ -69,7 +69,7 @@ class Event(Resource):
         update_event.event_type = event.get('event_type') or update_event.event_type
         update_event.name = event.get('name') or update_event.name
         update_event.description = event.get('description') or update_event.description
-        update_event.submit_date = event.get('date') or update_event.submit_date
+        update_event.date = event.get('date') or update_event.submit_date
 
         update_event.save()
 
@@ -152,7 +152,7 @@ class AnnouncementsResource(Resource):
                         print('announcement: ',new_announcement_id,
                             'child_id: ',i.child_id,'group_id: ',x.grade_group_id)
                         announcement_children = AnnouncementsChildren(announcement_id = new_announcement_id,
-                        child_id =i.child_id,grede_group_id = x.grade_group_id)
+                        child_id =i.child_id,grade_group_id = x.grade_group_id)
                         db.session.add(announcement_children)
 
                 

@@ -6,7 +6,7 @@ from datetime import date, timedelta, time, datetime
 from sqlalchemy import func
 from app.database import db, QueriedData
 from app.forms import Events
-from ..models.grades import Users, Reports
+from ..models.models import Users, Reports 
 #from .. import environment
 
 
