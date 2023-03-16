@@ -1,9 +1,18 @@
 # school app :computer:
 
 <p>with this project that I'm developing I want to expose my skills and knowledge as a Backend developer while keep learning and improving</p>
-the app has two main  profiles: one for teachers and the other for parents,
-features:
-  <p>two modules (for teachers and for parents)</p>
+<p>This is an app to expose backend features with basic frontend implementation. has two main modules, one independent for teachers and the other for parents (currently developing Teachers's)</p>
+<p>
+<h4>stack</h4>
+<p>
+Python - Flask framework -
+Vanilla Javascript -
+Html and CSS (bootstrap) -
+MYSQL database - Hosted in AWS RDS -
+Google Cloud Storage - for objects and static content
+
+</p>
+<h4>This app contains</h4>
   <p>authenttication and authorization </p>
   <p>mysql database integrated </p>
   <p>modeling of database</p>
