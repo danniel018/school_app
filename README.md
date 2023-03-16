@@ -1,6 +1,6 @@
 # school app :computer:
 
-<p>with this project that I'm developing I want to create a web application for schools to be used for teachers and parents to monitor the performance of the students </p>
+<p>with this project that I'm developing I want to expose my skills and knowledge as a Backend developer while keep learning and improving</p>
 the app has two main  profiles: one for teachers and the other for parents,
 features:
   <p>two modules (for teachers and for parents)</p>
