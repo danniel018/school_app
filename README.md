@@ -42,7 +42,11 @@ Google Cloud Storage - for objects and static content
   Parents module
 </p>
 
-<h5>Database Diagram</h5>
+<h4>Database Diagram</h4>
 
 ![Database diagram!](https://live.staticflickr.com/65535/52758054066_ac4548b599_b.jpg)
+
+<h3>
+  <a href="https://school-app-23.uc.r.appspot.com">Test the app! :iphone: </a>
+ </h3>
 
