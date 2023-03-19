@@ -1,6 +1,6 @@
 # school app :computer:
 
-<p>with this project that I'm developing I want to expose my skills and knowledge as a Backend developer while keep learning and improving</p>
+<p>with this project I want to expose my skills and knowledge as a Backend developer while keep learning and improving</p>
 <p>This is an app to expose backend features with basic frontend implementation. has two main modules, one independent for teachers and the other for parents (currently developing Teachers's)</p>
 <p>
 <h4>stack</h4>
@@ -26,19 +26,22 @@ Google Cloud Storage - for objects and static content
 <h4>Currently the teachers module contains</h4>
 <p>
 :watch:Upcoming class reminder <br>
-:book:Teacher's classes<br> 
-:note:Create event on classes (task, exam,etc)<br>
-:number:Grade children's events <br>
-:file:Generate grades report on student<br>
-:file:Issue announcement or summons on students<br>
+:book: Teacher's classes<br> 
+:pencil2: Create event on classes (task, exam,etc)<br>
+:white_check_mark:Grade children's events <br>
+:chart_with_upwards_trend:Generate grades report on student<br>
+:memo:Issue announcement or summons on students<br>
 </p>
 
-<h4>To develop:</h4>
+<h4>To Integrate:</h4>
 <p>
-  unit testing
-  qeue task
-  cron jobs
-  notifications
+  unit testing<br>
+  queue task<br>
+  cron jobs<br>
+  notifications<br>
   Parents module
 </p>
+
+<h5>Database Diagram</h5>
+![Database diagram](https://drive.google.com/file/d/1wa4N_GqMBMJZkxi0paG_qersp1BMBOG_/view?usp=sharing)
 
